@@ -91,30 +91,7 @@
             observer.observe(el);
         });
 
-        // Form submission
-        document.querySelector('.contact-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Add loading state
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Sending...';
-            submitBtn.disabled = true;
-            
-            // Simulate form submission
-            setTimeout(() => {
-                submitBtn.textContent = 'Message Sent!';
-                submitBtn.style.background = 'linear-gradient(135deg, #10b981, #06ffa5)';
-                
-                setTimeout(() => {
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                    submitBtn.style.background = '';
-                    e.target.reset();
-                }, 2000);
-            }, 1500);
-        });
-
+        
         // Navbar background on scroll
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
@@ -189,3 +166,7 @@
         heroImage.addEventListener('mouseleave', () => {
             heroImage.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
         });
+
+        
+
+      

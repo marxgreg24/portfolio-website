@@ -6,6 +6,8 @@
     <title>Your Portfolio - Creative Developer</title>
     <link rel="stylesheet" href="./styles.css">
     <script src="./script.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
     <div class="bg-animation"></div>
@@ -24,7 +26,7 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1>Hi, I'm Mark Gregory Okiror</h1>
-                    <p class="subtitle">Creative Developer & Designer</p>
+                    <p class="subtitle">Full Stack, ML, Smart Contracts</p>
                     <p class="description">
                         I craft digital experiences that blend creativity with functionality. 
                         From stunning user interfaces to robust backend solutions, I bring ideas to life through code.
@@ -48,7 +50,7 @@
                 <div class="about-text fade-in">
                     <h2>About Me</h2>
                     <p>
-                        I'm a passionate developer with over 5 years of experience creating 
+                        I'm a passionate developer with over 2 years of experience creating 
                         innovative digital solutions. My journey spans from crafting pixel-perfect 
                         user interfaces to architecting scalable backend systems.
                     </p>
@@ -89,36 +91,14 @@
         <div class="container">
             <h2 class="fade-in">Featured Projects</h2>
             <div class="project-grid">
-                <div class="project-card fade-in">
+                   <div class="project-card fade-in">
                     <h3>MUST Accommodation Platform</h3>
-                    <p>A full-stack accommodation booking solution for MUST students with real-time location,and booking processing.</p>
+                    <p>A full-stack acommodation Platform that facilitates accommodation bookings and management for students and staff at Mbarara University. The platform provides an easy-to-use interface for finding and securing accommodation on campus.</p>
                     <div class="project-tech">
-                        <span class="tech-tag">HTML</span>
+                        <span class="tech-tag">EJS, CSS</span>
                         <span class="tech-tag">Node.js</span>
-                        <span class="tech-tag">PostgreSQL</span>
-                        <span class="tech-tag">CSS</span>
-                    </div>
-                    <a href="#" class="btn btn-secondary">View Project</a>
-                </div>
-                <div class="project-card fade-in">
-                    <h3>AI-Powered Dashboard</h3>
-                    <p>An intelligent analytics dashboard that uses machine learning to provide predictive insights and automated reporting.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">TensorFlow</span>
-                        <span class="tech-tag">React</span>
-                        <span class="tech-tag">D3.js</span>
-                    </div>
-                    <a href="#" class="btn btn-secondary">View Project</a>
-                </div>
-                <div class="project-card fade-in">
-                    <h3>Mobile App Design System</h3>
-                    <p>A comprehensive design system and component library used across multiple mobile applications, ensuring consistency and efficiency.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">React Native</span>
-                        <span class="tech-tag">Figma</span>
-                        <span class="tech-tag">TypeScript</span>
-                        <span class="tech-tag">Storybook</span>
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">PosgreSQL</span>
                     </div>
                     <a href="#" class="btn btn-secondary">View Project</a>
                 </div>
@@ -129,31 +109,59 @@
     <section id="contact" class="contact">
         <div class="container">
             <div class="contact-content">
-                <h2 class="fade-in">Let's Work Together</h2>
-                <p class="fade-in">
-                    Ready to bring your ideas to life? I'm always excited to collaborate on innovative projects 
-                    and help businesses achieve their digital goals.
-                </p>
-                <form class="contact-form fade-in">
-                    <div class="form-group">
-                        <input type="text" placeholder="Your Name" required>
+                <h2 class="fade-in">Get In Touch</h2>
+                <p class="contact-subtitle fade-in">Let's collaborate and bring your ideas to life</p>
+                
+                <div class="contact-info fade-in">
+                    <div class="contact-item">
+                        <div class="contact-icon fas fa-envelope"></div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <a href="mailto:okirormarkgreg24@gmail.com">okirormarkgreg24@gmail.com</a>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="email" placeholder="Your Email" required>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon fas fa-phone"></div>
+                        <div class="contact-details">
+                            <h3>Phone</h3>
+                            <a href="tel:+256764476981">+256 764 476 981</a>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="text" placeholder="Subject" required>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon fas fa-map-marker-alt"></div>
+                        <div class="contact-details">
+                            <h3>Location</h3>
+                            <span>Entebbe, Uganda</span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <textarea rows="5" placeholder="Your Message" required></textarea>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon fab fa-linkedin"></div>
+                        <div class="contact-details">
+                            <h3>LinkedIn</h3>
+                            <a href="https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/" target="_blank">Mark Gregory Okiror</a>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
+                </div>
+                
                 <div class="social-links fade-in">
-                    <a href="#" class="social-link">📧</a>
-                    <a href="#" class="social-link">💼</a>
-                    <a href="#" class="social-link">🐙</a>
-                    <a href="#" class="social-link">🐦</a>
+                    <a href="mailto:okirormarkgreg24@gmail.com" class="social-link fas fa-envelope" title="Email">
+                        <span></span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/" class="social-link fab fa-linkedin" title="LinkedIn" target="_blank">
+                        <span></span>
+                    </a>
+                    <a href="https://github.com/marxgreg24" class="social-link fab fa-github" title="GitHub" target="_blank">
+                        <span></span>
+                    </a>
+                   
+                </div>
+                
+                <div class="availability-status fade-in">
+                    <div class="status-indicator"></div>
+                    <span>Available for new opportunities</span>
                 </div>
             </div>
         </div>
