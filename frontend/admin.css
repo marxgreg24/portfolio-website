@@ -1,0 +1,164 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #07121f;
+    --panel: #0f2238;
+    --panel-accent: #173759;
+    --text: #f4f9ff;
+    --muted: #b8c8d9;
+    --accent: #f9c74f;
+    --line: #2a4b70;
+}
+
+body {
+    margin: 0;
+    font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+    background: radial-gradient(circle at 10% 10%, #163a5f, var(--bg) 45%);
+    color: var(--text);
+}
+
+.admin-shell {
+    width: min(1100px, 92%);
+    margin: 2rem auto 4rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.admin-header h1 {
+    margin: 0;
+    font-size: 2.4rem;
+}
+
+.admin-header p {
+    color: var(--muted);
+}
+
+.back-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.panel {
+    background: linear-gradient(180deg, var(--panel), var(--panel-accent));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem;
+}
+
+.panel h2 {
+    margin-top: 0;
+}
+
+.grid-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.inline-form {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.92rem;
+}
+
+input,
+textarea,
+button {
+    font: inherit;
+}
+
+input,
+textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: #0b1a2b;
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.btn-primary,
+.btn-secondary {
+    border: 0;
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #1d1d1d;
+}
+
+.btn-secondary {
+    background: #203952;
+    color: var(--text);
+}
+
+.item-list {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.7rem;
+}
+
+.item-list li {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(4, 12, 20, 0.55);
+}
+
+.item-list .meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.status {
+    margin: 0;
+    font-weight: 700;
+    min-height: 1.2rem;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+@media (max-width: 800px) {
+    .grid-form {
+        grid-template-columns: 1fr;
+    }
+
+    .span-2 {
+        grid-column: auto;
+    }
+}

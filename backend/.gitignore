@@ -1,0 +1,9 @@
+node_modules/
+.env
+uploads/
+portfolio-api.postman_collection.json
+uploads/
+```.DS_Store
+   .gitkeep
+```
+logs/

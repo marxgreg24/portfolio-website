@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Admin</title>
+    <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+    <main class="admin-shell">
+        <header class="admin-header">
+            <h1>Portfolio CMS</h1>
+            <p>Manage your profile, skills, projects, and social links from here.</p>
+            <a class="back-link" href="/frontend/index.html" target="_blank" rel="noreferrer">Open Portfolio</a>
+        </header>
+
+        <section class="panel">
+            <h2>Profile</h2>
+            <form id="profile-form" class="grid-form">
+                <label>Full Name<input name="fullName" required></label>
+                <label>Headline<input name="headline" required></label>
+                <label>Email<input name="email" type="email" required></label>
+                <label>Phone<input name="phone" required></label>
+                <label>Location<input name="location" required></label>
+                <label>Availability<input name="availability" required></label>
+                <label>LinkedIn URL<input name="linkedinUrl"></label>
+                <label>LinkedIn Label<input name="linkedinLabel"></label>
+                <label>GitHub URL<input name="githubUrl"></label>
+                <label>Profile Image URL<input name="profileImageUrl"></label>
+                <label class="span-2">Hero Description<textarea name="heroDescription" rows="3" required></textarea></label>
+                <label class="span-2">About Summary<textarea name="aboutSummary" rows="3" required></textarea></label>
+                <label class="span-2">About Story<textarea name="aboutStory" rows="3" required></textarea></label>
+                <button type="submit" class="btn-primary">Save Profile</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Profile Picture Upload</h2>
+            <form id="image-form" class="inline-form">
+                <input type="file" id="profileImage" accept="image/*" required>
+                <button type="submit" class="btn-primary">Upload</button>
+            </form>
+            <p id="current-image-url" class="muted"></p>
+        </section>
+
+        <section class="panel">
+            <h2>Skills</h2>
+            <form id="skill-form" class="inline-form">
+                <input type="hidden" name="id">
+                <input name="name" placeholder="Skill name" required>
+                <input name="sortOrder" type="number" placeholder="Sort order" value="0">
+                <button type="submit" class="btn-primary">Save Skill</button>
+                <button type="button" id="skill-reset" class="btn-secondary">Clear</button>
+            </form>
+            <ul id="skills-list" class="item-list"></ul>
+        </section>
+
+        <section class="panel">
+            <h2>Projects</h2>
+            <form id="project-form" class="grid-form">
+                <input type="hidden" name="id">
+                <label>Title<input name="title" required></label>
+                <label>Project URL<input name="url" placeholder="https://... or #"></label>
+                <label class="span-2">Description<textarea name="description" rows="3" required></textarea></label>
+                <label class="span-2">Tech (comma separated)<input name="tech" placeholder="Node.js, PostgreSQL, CSS"></label>
+                <label>Sort Order<input name="sortOrder" type="number" value="0"></label>
+                <div class="actions span-2">
+                    <button type="submit" class="btn-primary">Save Project</button>
+                    <button type="button" id="project-reset" class="btn-secondary">Clear</button>
+                </div>
+            </form>
+            <ul id="projects-list" class="item-list"></ul>
+        </section>
+
+        <section class="panel">
+            <h2>Social Links</h2>
+            <form id="social-form" class="grid-form">
+                <input type="hidden" name="id">
+                <label>Platform<input name="platform" placeholder="GitHub" required></label>
+                <label>Icon Class<input name="iconClass" placeholder="fab fa-github" required></label>
+                <label class="span-2">URL<input name="url" placeholder="https://... or mailto:..." required></label>
+                <label>Sort Order<input name="sortOrder" type="number" value="0"></label>
+                <div class="actions span-2">
+                    <button type="submit" class="btn-primary">Save Social Link</button>
+                    <button type="button" id="social-reset" class="btn-secondary">Clear</button>
+                </div>
+            </form>
+            <ul id="social-list" class="item-list"></ul>
+        </section>
+
+        <p id="status" class="status"></p>
+    </main>
+
+    <script src="./admin.js" defer></script>
+</body>
+</html>

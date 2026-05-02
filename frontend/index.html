@@ -18,6 +18,7 @@
             <li><a href="#about" class="nav-link">About</a></li>
             <li><a href="#projects" class="nav-link">Projects</a></li>
             <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="/frontend/admin.html" target="_blank" rel="noreferrer">Admin</a></li>
         </ul>
     </nav>
 
@@ -25,12 +26,9 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>Hi, I'm Mark Gregory Okiror</h1>
-                    <p class="subtitle">Full Stack, ML, Smart Contracts</p>
-                    <p class="description">
-                        I craft digital experiences that blend creativity with functionality. 
-                        From stunning user interfaces to robust backend solutions, I bring ideas to life through code.
-                    </p>
+                    <h1 id="hero-name">Hi, I'm Mark Gregory Okiror</h1>
+                    <p id="hero-headline" class="subtitle">Full Stack, ML, Smart Contracts</p>
+                    <p id="hero-description" class="description">I craft digital experiences that blend creativity with functionality. From stunning user interfaces to robust backend solutions, I bring ideas to life through code.</p>
                     <div class="cta-buttons">
                         <a href="#projects" class="btn btn-primary">View My Work</a>
                         <a href="#contact" class="btn btn-secondary">Get In Touch</a>
@@ -38,7 +36,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="./617635.jpg" alt="Mark Gregory Okiror">
+                <img id="profile-image" src="./617635.jpg" alt="Profile picture">
                 <div class="image-border"></div>
             </div>
         </div>
@@ -49,25 +47,9 @@
             <div class="about-content">
                 <div class="about-text fade-in">
                     <h2>About Me</h2>
-                    <p>
-                        I'm a passionate developer with over 2 years of experience creating 
-                        innovative digital solutions. My journey spans from crafting pixel-perfect 
-                        user interfaces to architecting scalable backend systems.
-                    </p>
-                    <p>
-                        I believe in the power of clean code, thoughtful design, and continuous learning. 
-                        When I'm not coding, you'll find me exploring new technologies or contributing to open-source projects.
-                    </p>
-                    <div class="skills">
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">HTML&CSS</span>
-                        <span class="skill-tag">Node.js</span>
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">UI/UX Design</span>
-                        <span class="skill-tag">SQL</span>
-                        <span class="skill-tag">AWS(basics)</span>
-                        <span class="skill-tag">Machine Learning&AI</span>
-                    </div>
+                    <p id="about-summary">I'm a passionate developer with over 2 years of experience creating innovative digital solutions. My journey spans from crafting pixel-perfect user interfaces to architecting scalable backend systems.</p>
+                    <p id="about-story">I believe in the power of clean code, thoughtful design, and continuous learning. When I'm not coding, you'll find me exploring new technologies or contributing to open-source projects.</p>
+                    <div id="skills-list" class="skills"></div>
                 </div>
                 <div class="about-visual">
                     <div class="floating-card">
@@ -90,19 +72,7 @@
     <section id="projects" class="projects">
         <div class="container">
             <h2 class="fade-in">Featured Projects</h2>
-            <div class="project-grid">
-                   <div class="project-card fade-in">
-                    <h3>MUST Accommodation Platform</h3>
-                    <p>A full-stack acommodation Platform that facilitates accommodation bookings and management for students and staff at Mbarara University. The platform provides an easy-to-use interface for finding and securing accommodation on campus.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">EJS, CSS</span>
-                        <span class="tech-tag">Node.js</span>
-                        <span class="tech-tag">JavaScript</span>
-                        <span class="tech-tag">PosgreSQL</span>
-                    </div>
-                    <a href="#" class="btn btn-secondary">View Project</a>
-                </div>
-            </div>
+            <div id="project-grid" class="project-grid"></div>
         </div>
     </section>
 
@@ -117,7 +87,7 @@
                         <div class="contact-icon fas fa-envelope"></div>
                         <div class="contact-details">
                             <h3>Email</h3>
-                            <a href="mailto:okirormarkgreg24@gmail.com">okirormarkgreg24@gmail.com</a>
+                            <a id="contact-email" href="mailto:okirormarkgreg24@gmail.com">okirormarkgreg24@gmail.com</a>
                         </div>
                     </div>
                     
@@ -125,7 +95,7 @@
                         <div class="contact-icon fas fa-phone"></div>
                         <div class="contact-details">
                             <h3>Phone</h3>
-                            <a href="tel:+256764476981">+256 764 476 981</a>
+                            <a id="contact-phone" href="tel:+256764476981">+256 764 476 981</a>
                         </div>
                     </div>
                     
@@ -133,7 +103,7 @@
                         <div class="contact-icon fas fa-map-marker-alt"></div>
                         <div class="contact-details">
                             <h3>Location</h3>
-                            <span>Entebbe, Uganda</span>
+                            <span id="contact-location">Entebbe, Uganda</span>
                         </div>
                     </div>
                     
@@ -141,27 +111,16 @@
                         <div class="contact-icon fab fa-linkedin"></div>
                         <div class="contact-details">
                             <h3>LinkedIn</h3>
-                            <a href="https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/" target="_blank">Mark Gregory Okiror</a>
+                            <a id="linkedin-link" href="https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/" target="_blank">Mark Gregory Okiror</a>
                         </div>
                     </div>
                 </div>
                 
-                <div class="social-links fade-in">
-                    <a href="mailto:okirormarkgreg24@gmail.com" class="social-link fas fa-envelope" title="Email">
-                        <span></span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/" class="social-link fab fa-linkedin" title="LinkedIn" target="_blank">
-                        <span></span>
-                    </a>
-                    <a href="https://github.com/marxgreg24" class="social-link fab fa-github" title="GitHub" target="_blank">
-                        <span></span>
-                    </a>
-                   
-                </div>
+                <div id="social-links" class="social-links fade-in"></div>
                 
                 <div class="availability-status fade-in">
                     <div class="status-indicator"></div>
-                    <span>Available for new opportunities</span>
+                    <span id="availability-text">Available for new opportunities</span>
                 </div>
             </div>
         </div>
