@@ -6,6 +6,7 @@ import multer from 'multer';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 
 // Force .env values to override stale shell-exported variables (e.g. old admin password).
 dotenv.config({ override: true });
@@ -44,6 +45,16 @@ if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
     console.warn('Admin auth is not configured. Add ADMIN_USERNAME and ADMIN_PASSWORD to your .env file.');
 }
 
+// Initialize Supabase client for Storage operations
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+let supabase = null;
+if (supabaseUrl && supabaseServiceRoleKey) {
+    supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+} else {
+    console.warn('Supabase credentials not configured. File uploads to Supabase Storage will not work.');
+}
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
@@ -58,19 +69,15 @@ function sleep(ms) {
 }
 
 // Ensure the uploads folder exists before file uploads are attempted.
+// Note: Now using Supabase Storage, so local uploads directory is kept for backward compatibility only.
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure Multer storage and generate unique filenames for uploaded images.
-const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadsDir),
-    filename: (_req, file, cb) => {
-        const extension = path.extname(file.originalname) || '.jpg';
-        cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`);
-    }
-});
+// Configure Multer to store files in memory for upload to Supabase Storage.
+// Instead of saving to disk, we buffer the file and upload it directly.
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage,
@@ -174,7 +181,8 @@ function requireAdminAuth(req, res, next) {
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(uploadsDir));
+// Note: /uploads route removed since we now use Supabase Storage for file serving
+// app.use('/uploads', express.static(uploadsDir));
 
 // Protect selected admin static files with the same auth used by admin APIs.
 app.use((req, res, next) => {
@@ -505,9 +513,36 @@ app.post('/api/profile-image', upload.single('profileImage'), async (req, res, n
             return;
         }
 
-        // Persist image URL in profile after Multer stores the file.
+        if (!supabase) {
+            res.status(503).json({ error: 'Supabase Storage is not configured. Cannot upload files.' });
+            return;
+        }
+
+        // Generate unique filename for the uploaded image
+        const extension = path.extname(req.file.originalname) || '.jpg';
+        const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`;
+
+        // Upload file buffer to Supabase Storage
+        const { data, error } = await supabase.storage
+            .from('profile-images')
+            .upload(filename, req.file.buffer, {
+                contentType: req.file.mimetype
+            });
+
+        if (error) {
+            console.error('Supabase upload error:', error);
+            res.status(500).json({ error: 'Failed to upload image to storage.' });
+            return;
+        }
+
+        // Get the public URL for the uploaded file
+        const { data: { publicUrl } } = supabase.storage
+            .from('profile-images')
+            .getPublicUrl(filename);
+
+        // Persist image URL in profile after Supabase stores the file.
         const current = (await getProfile()) || DEFAULT_PROFILE;
-        const imageUrl = `/uploads/${req.file.filename}`;
+        const imageUrl = publicUrl;
         const updatedProfile = await saveProfile({ ...current, profileImageUrl: imageUrl });
         res.status(201).json({ imageUrl, profile: updatedProfile });
     } catch (error) {
