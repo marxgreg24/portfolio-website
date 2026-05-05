@@ -1,9 +1,12 @@
 node_modules/
 .env
+.env.local
+.env.*.local
 uploads/
-portfolio-api.postman_collection.json
-uploads/
-```.DS_Store
-   .gitkeep
-```
-logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+dist/
+.vscode/

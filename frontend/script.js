@@ -27,6 +27,12 @@ const FALLBACK_PORTFOLIO = {
     ],
     projects: [
         {
+            title: 'Portfolio Website',
+            description: 'A dynamic, full-stack portfolio website built with Node.js, Express, PostgreSQL, and Supabase. Features a CMS admin panel for managing projects, skills, and profile information with real-time updates.',
+            url: '/',
+            tech: ['Node.js', 'Express', 'PostgreSQL', 'Supabase', 'JavaScript', 'CSS']
+        },
+        {
             title: 'MUST Accommodation Platform',
             description: 'A full-stack accommodation platform that facilitates bookings and management for students and staff at Mbarara University.',
             url: '#',

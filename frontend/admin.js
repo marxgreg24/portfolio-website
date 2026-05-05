@@ -1,6 +1,45 @@
 // Shared status message area used for success and error feedback.
 const statusEl = document.getElementById('status');
 
+// Manage Basic Auth credentials for API calls
+let authCredentials = null;
+
+function getAuthHeader() {
+    if (!authCredentials) return {};
+    const encodedCredentials = btoa(`${authCredentials.username}:${authCredentials.password}`);
+    return {
+        'Authorization': `Basic ${encodedCredentials}`
+    };
+}
+
+// Prompt user for credentials and store them
+async function promptForCredentials() {
+    const username = prompt('Enter admin username:');
+    if (username === null) return false;
+
+    const password = prompt('Enter admin password:');
+    if (password === null) return false;
+
+    authCredentials = { username, password };
+    sessionStorage.setItem('adminAuth', btoa(JSON.stringify(authCredentials)));
+    return true;
+}
+
+// Try to load stored credentials from session
+function loadStoredCredentials() {
+    try {
+        const stored = sessionStorage.getItem('adminAuth');
+        if (stored) {
+            authCredentials = JSON.parse(atob(stored));
+            return true;
+        }
+    } catch (e) {
+        console.error('Failed to load stored credentials:', e);
+        sessionStorage.removeItem('adminAuth');
+    }
+    return false;
+}
+
 // Display a user-facing status message with contextual color.
 function setStatus(message, isError = false) {
     statusEl.textContent = message;
@@ -9,10 +48,34 @@ function setStatus(message, isError = false) {
 
 // Small wrapper around fetch for JSON APIs and normalized error handling.
 async function api(path, options = {}) {
-    const response = await fetch(path, {
-        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    let response = await fetch(path, {
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeader(),
+            ...(options.headers || {})
+        },
         ...options
     });
+
+    // If 401, prompt for credentials and retry once
+    if (response.status === 401) {
+        const hasCredentials = loadStoredCredentials();
+        if (!hasCredentials) {
+            const authenticated = await promptForCredentials();
+            if (!authenticated) {
+                throw new Error('Authentication cancelled.');
+            }
+        }
+
+        response = await fetch(path, {
+            headers: {
+                'Content-Type': 'application/json',
+                ...getAuthHeader(),
+                ...(options.headers || {})
+            },
+            ...options
+        });
+    }
 
     if (response.status === 204) {
         return null;
@@ -293,7 +356,8 @@ imageForm.addEventListener('submit', async (event) => {
 
         const response = await fetch('/api/profile-image', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: getAuthHeader()
         });
 
         const data = await response.json();
@@ -423,6 +487,8 @@ document.getElementById('social-reset').addEventListener('click', () => resetFor
 // Bootstrap all dashboard data concurrently for faster initial load.
 async function init() {
     try {
+        // Try to load stored credentials or prompt user
+        loadStoredCredentials();
         await Promise.all([loadProfile(), loadSkills(), loadProjects(), loadSocialLinks()]);
         setStatus('Admin dashboard loaded.');
     } catch (error) {
