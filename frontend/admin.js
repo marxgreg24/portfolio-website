@@ -367,6 +367,12 @@ imageForm.addEventListener('submit', async (event) => {
 
         setStatus('Profile image uploaded successfully.');
         currentImageUrlEl.textContent = `Current image: ${data.imageUrl}`;
+        
+        // Update the profile form's input to align with the new image URL
+        if (profileForm.elements.profileImageUrl) {
+            profileForm.elements.profileImageUrl.value = data.imageUrl;
+        }
+
         imageForm.reset();
     } catch (error) {
         setStatus(error.message, true);
