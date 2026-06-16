@@ -48,6 +48,8 @@ const FALLBACK_PORTFOLIO = {
 
 // Reused observer reference so dynamically added elements can be observed too.
 let fadeInObserver;
+const siteNoticeEl = document.getElementById('site-notice');
+let siteNoticeTimer = null;
 
 // Typewriter animation for the hero title text.
 function typeWriter(element, text, speed = 80) {
@@ -243,11 +245,42 @@ async function fetchPortfolio() {
             throw new Error(`Failed to fetch portfolio: ${response.status}`);
         }
 
+        clearSiteNotice();
         return await response.json();
     } catch (error) {
+        showSiteNotice('Live portfolio data is temporarily unavailable. Showing fallback content.', 'warning');
         console.warn('Using fallback data because API request failed:', error.message);
         return FALLBACK_PORTFOLIO;
     }
+}
+
+function showSiteNotice(message, type = 'warning') {
+    if (!siteNoticeEl) {
+        return;
+    }
+
+    if (siteNoticeTimer) {
+        clearTimeout(siteNoticeTimer);
+        siteNoticeTimer = null;
+    }
+
+    siteNoticeEl.textContent = message;
+    siteNoticeEl.className = `site-notice is-${type}`;
+    siteNoticeEl.hidden = false;
+
+    siteNoticeTimer = setTimeout(() => {
+        siteNoticeEl.hidden = true;
+    }, 7000);
+}
+
+function clearSiteNotice() {
+    if (!siteNoticeEl) {
+        return;
+    }
+
+    siteNoticeEl.hidden = true;
+    siteNoticeEl.textContent = '';
+    siteNoticeEl.className = 'site-notice';
 }
 
 // Helper to assign text only when target element exists.

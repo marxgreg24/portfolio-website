@@ -1,5 +1,6 @@
 // Shared status message area used for success and error feedback.
 const statusEl = document.getElementById('status');
+const notificationEl = document.getElementById('notification');
 
 // Manage Basic Auth credentials for API calls
 let authCredentials = null;
@@ -41,9 +42,56 @@ function loadStoredCredentials() {
 }
 
 // Display a user-facing status message with contextual color.
+let notificationTimer = null;
+
+function normalizeErrorMessage(error) {
+    if (!error) {
+        return 'Something went wrong.';
+    }
+
+    if (error.name === 'AbortError') {
+        return 'The request was cancelled.';
+    }
+
+    if (typeof error === 'string') {
+        return error;
+    }
+
+    if (error.message) {
+        return error.message;
+    }
+
+    return 'Something went wrong.';
+}
+
+function showNotification(message, type = 'info', autoHide = true) {
+    const text = normalizeErrorMessage(message);
+
+    if (notificationTimer) {
+        clearTimeout(notificationTimer);
+        notificationTimer = null;
+    }
+
+    if (notificationEl) {
+        notificationEl.textContent = text;
+        notificationEl.className = `notification is-${type}`;
+        notificationEl.hidden = false;
+    }
+
+    if (statusEl) {
+        statusEl.textContent = text;
+        statusEl.style.color = type === 'error' ? '#ffb4b4' : '#baf7cf';
+    }
+
+    if (autoHide && notificationEl) {
+        notificationTimer = setTimeout(() => {
+            notificationEl.hidden = true;
+        }, 6000);
+    }
+}
+
 function setStatus(message, isError = false) {
-    statusEl.textContent = message;
-    statusEl.style.color = isError ? '#ff7b7b' : '#8be9a8';
+    showNotification(message, isError ? 'error' : 'success');
 }
 
 // Small wrapper around fetch for JSON APIs and normalized error handling.
@@ -81,9 +129,13 @@ async function api(path, options = {}) {
         return null;
     }
 
-    const data = await response.json();
+    const contentType = response.headers.get('content-type') || '';
+    const data = contentType.includes('application/json')
+        ? await response.json()
+        : { error: await response.text() };
+
     if (!response.ok) {
-        throw new Error(data.error || `Request failed with status ${response.status}`);
+        throw new Error(data.error || data.message || `Request failed with status ${response.status}`);
     }
 
     return data;
@@ -178,7 +230,7 @@ function renderSkills(skills) {
             }
 
             await api(`/api/skills/${skill.id}`, { method: 'DELETE' });
-            setStatus('Skill deleted.');
+            showNotification('Skill deleted.', 'success');
             await loadSkills();
         });
 
@@ -241,7 +293,7 @@ function renderProjects(projects) {
             }
 
             await api(`/api/projects/${project.id}`, { method: 'DELETE' });
-            setStatus('Project deleted.');
+            showNotification('Project deleted.', 'success');
             await loadProjects();
         });
 
@@ -303,7 +355,7 @@ function renderSocialLinks(links) {
             }
 
             await api(`/api/social-links/${link.id}`, { method: 'DELETE' });
-            setStatus('Social link deleted.');
+            showNotification('Social link deleted.', 'success');
             await loadSocialLinks();
         });
 
@@ -332,10 +384,10 @@ profileForm.addEventListener('submit', async (event) => {
             method: 'PUT',
             body: JSON.stringify(payload)
         });
-        setStatus('Profile saved successfully.');
+        showNotification('Profile saved successfully.', 'success');
         await loadProfile();
     } catch (error) {
-        setStatus(error.message, true);
+        showNotification(`Failed to save profile: ${error.message}`, 'error');
     }
 });
 
@@ -347,7 +399,7 @@ imageForm.addEventListener('submit', async (event) => {
         const fileInput = document.getElementById('profileImage');
         const file = fileInput.files[0];
         if (!file) {
-            setStatus('Please choose an image file first.', true);
+            showNotification('Please choose an image file first.', 'error');
             return;
         }
 
@@ -365,7 +417,7 @@ imageForm.addEventListener('submit', async (event) => {
             throw new Error(data.error || 'Image upload failed.');
         }
 
-        setStatus('Profile image uploaded successfully.');
+        showNotification('Profile image uploaded successfully.', 'success');
         currentImageUrlEl.textContent = `Current image: ${data.imageUrl}`;
         
         // Update the profile form's input to align with the new image URL
@@ -375,7 +427,7 @@ imageForm.addEventListener('submit', async (event) => {
 
         imageForm.reset();
     } catch (error) {
-        setStatus(error.message, true);
+        showNotification(`Profile image upload failed: ${error.message}`, 'error');
     }
 });
 
@@ -393,7 +445,7 @@ skillForm.addEventListener('submit', async (event) => {
                     sortOrder: payload.sortOrder
                 })
             });
-            setStatus('Skill updated.');
+            showNotification('Skill updated.', 'success');
         } else {
             await api('/api/skills', {
                 method: 'POST',
@@ -402,13 +454,13 @@ skillForm.addEventListener('submit', async (event) => {
                     sortOrder: payload.sortOrder
                 })
             });
-            setStatus('Skill added.');
+            showNotification('Skill added.', 'success');
         }
 
         resetForm(skillForm);
         await loadSkills();
     } catch (error) {
-        setStatus(error.message, true);
+        showNotification(`Failed to save skill: ${error.message}`, 'error');
     }
 });
 
@@ -434,19 +486,19 @@ projectForm.addEventListener('submit', async (event) => {
                 method: 'PUT',
                 body: JSON.stringify(requestPayload)
             });
-            setStatus('Project updated.');
+            showNotification('Project updated.', 'success');
         } else {
             await api('/api/projects', {
                 method: 'POST',
                 body: JSON.stringify(requestPayload)
             });
-            setStatus('Project added.');
+            showNotification('Project added.', 'success');
         }
 
         resetForm(projectForm);
         await loadProjects();
     } catch (error) {
-        setStatus(error.message, true);
+        showNotification(`Failed to save project: ${error.message}`, 'error');
     }
 });
 
@@ -471,19 +523,19 @@ socialForm.addEventListener('submit', async (event) => {
                 method: 'PUT',
                 body: JSON.stringify(requestPayload)
             });
-            setStatus('Social link updated.');
+            showNotification('Social link updated.', 'success');
         } else {
             await api('/api/social-links', {
                 method: 'POST',
                 body: JSON.stringify(requestPayload)
             });
-            setStatus('Social link added.');
+            showNotification('Social link added.', 'success');
         }
 
         resetForm(socialForm);
         await loadSocialLinks();
     } catch (error) {
-        setStatus(error.message, true);
+        showNotification(`Failed to save social link: ${error.message}`, 'error');
     }
 });
 
@@ -496,9 +548,9 @@ async function init() {
         // Try to load stored credentials or prompt user
         loadStoredCredentials();
         await Promise.all([loadProfile(), loadSkills(), loadProjects(), loadSocialLinks()]);
-        setStatus('Admin dashboard loaded.');
+        showNotification('Admin dashboard loaded.', 'success');
     } catch (error) {
-        setStatus(error.message, true);
+        showNotification(`Admin dashboard could not finish loading: ${error.message}`, 'error');
     }
 }
 

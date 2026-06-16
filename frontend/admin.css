@@ -48,6 +48,33 @@ body {
     padding: 1rem;
 }
 
+.notification {
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.notification.is-info {
+    background: rgba(48, 84, 123, 0.85);
+    border-color: rgba(131, 179, 255, 0.35);
+    color: #eef6ff;
+}
+
+.notification.is-success {
+    background: rgba(20, 93, 66, 0.88);
+    border-color: rgba(94, 226, 164, 0.35);
+    color: #e8fff4;
+}
+
+.notification.is-error {
+    background: rgba(110, 31, 50, 0.92);
+    border-color: rgba(255, 140, 140, 0.35);
+    color: #fff1f1;
+}
+
 .panel h2 {
     margin-top: 0;
 }
@@ -141,7 +168,6 @@ textarea {
 
 .status {
     margin: 0;
-    font-weight: 700;
     min-height: 1.2rem;
 }
 
