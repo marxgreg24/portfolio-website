@@ -1,10 +1,12 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
 const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
 const helmet = require('helmet');
 const path = require('path');
 const pool = require('./config/db');
+const auth = require('./middleware/auth');
+const { initializeDatabase } = require('./scripts/migrate');
 
 // Route imports
 const profileRoutes = require('./routes/profile');
@@ -14,6 +16,7 @@ const socialRoutes = require('./routes/social');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const ALLOW_START_WITHOUT_DB = process.env.ALLOW_START_WITHOUT_DB === 'true';
 
 // Middleware
 app.use(helmet());
@@ -29,6 +32,15 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Require auth before serving the admin HTML directly from the static folder.
+app.use((req, res, next) => {
+    if (req.path === '/admin.html') {
+        return auth(req, res, next);
+    }
+
+    return next();
+});
 
 // Serve frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -110,7 +122,7 @@ app.get('/', (req, res) => {
 });
 
 // Serve admin.html for admin path
-app.get('/admin', (req, res) => {
+app.get(['/admin', '/admin/'], auth, (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/admin.html'));
 });
 
@@ -127,22 +139,34 @@ app.use((err, req, res, next) => {
 
 // Database connection test and server startup
 async function startServer() {
+    let dbConnected = false;
+
     try {
         // Test database connection
         await pool.query('SELECT NOW()');
         console.log('✓ Database connected successfully');
+        dbConnected = true;
 
-        // Start server
-        app.listen(PORT, () => {
-            console.log(`✓ Server is running on http://localhost:${PORT}`);
-            console.log(`✓ Portfolio: http://localhost:${PORT}`);
-            console.log(`✓ Admin Panel: http://localhost:${PORT}/admin`);
-        });
+        await initializeDatabase();
+        console.log('✓ Database schema ready');
     } catch (error) {
-        console.error('✗ Failed to start server:', error.message);
-        console.error('Make sure your DATABASE_URL is set in .env file');
-        process.exit(1);
+        console.error('✗ Database connection failed:', error.message);
+        if (!ALLOW_START_WITHOUT_DB) {
+            console.error('Make sure your DATABASE_URL is set in .env file');
+            process.exit(1);
+        }
+        console.log('Starting in degraded mode because ALLOW_START_WITHOUT_DB=true. DB-backed endpoints may fail until connectivity returns.');
     }
+
+    // Start server regardless of DB connection if ALLOW_START_WITHOUT_DB is true
+    app.listen(PORT, () => {
+        console.log(`✓ Server is running on http://localhost:${PORT}`);
+        console.log(`✓ Portfolio: http://localhost:${PORT}`);
+        console.log(`✓ Admin Panel: http://localhost:${PORT}/admin`);
+        if (!dbConnected) {
+            console.log('⚠️  Database is not connected - degraded mode active');
+        }
+    });
 }
 
 startServer();

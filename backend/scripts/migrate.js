@@ -103,11 +103,18 @@ async function initializeDatabase() {
         console.log('Initializing database schema...');
         await pool.query(schema);
         console.log('Database schema initialized successfully!');
-        process.exit(0);
     } catch (error) {
         console.error('Error initializing database:', error);
-        process.exit(1);
+        throw error;
     }
 }
 
-initializeDatabase();
+if (require.main === module) {
+    initializeDatabase()
+        .then(() => process.exit(0))
+        .catch(() => process.exit(1));
+}
+
+module.exports = {
+    initializeDatabase
+};
