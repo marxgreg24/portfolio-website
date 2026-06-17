@@ -105,13 +105,13 @@ A modern, full-stack portfolio website with a CMS admin panel. Built with Node.j
    ```
 
 7. **Open in Browser**
-   - Portfolio: http://localhost:5000
-   - Admin Panel: http://localhost:5000/admin
+   - Portfolio: http://localhost:3000
+   - Admin Panel: http://localhost:3000/admin
 
 ## 🔑 Admin Panel
 
 ### Access
-1. Go to http://localhost:5000/admin
+1. Go to http://localhost:3000/admin
 2. Click any admin action
 3. Enter credentials when prompted:
    - Username: `admin` (or your custom username)
