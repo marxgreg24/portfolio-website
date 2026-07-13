@@ -67,7 +67,7 @@ Edit `.env`:
 DATABASE_URL=postgresql://your_user:your_password@your_host/portfolio_db
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=your_secure_password
-PORT=5000
+PORT=3000
 NODE_ENV=development
 ```
 
@@ -91,12 +91,12 @@ npm run dev
 npm start
 ```
 
-Server runs on: `http://localhost:5000`
+Server runs on: `http://localhost:3000`
 
 ## 🔑 Admin Access
 
 ### First Time Setup:
-1. Go to http://localhost:5000/admin
+1. Go to http://localhost:3000/admin
 2. Click on any admin action (edit profile, add skill, etc.)
 3. Enter credentials when prompted:
    - Username: `admin`
@@ -128,7 +128,7 @@ DATABASE_URL=postgresql://...@neon.tech/...
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=your_secure_password
 NODE_ENV=production
-PORT=5000
+PORT=3000
 ```
 
 #### Add GitHub Deploy:

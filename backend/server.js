@@ -18,7 +18,7 @@ const socialRoutes = require('./routes/social');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const ALLOW_START_WITHOUT_DB = process.env.ALLOW_START_WITHOUT_DB === 'true';
-const allowedOrigins = (process.env.FRONTEND_ORIGIN || '')
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:3000')
     .split(',')
     .map(origin => origin.trim())
     .filter(Boolean);
