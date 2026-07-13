@@ -33,6 +33,9 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Serve site images so the favicon can be loaded from the browser.
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 // Require auth before serving the admin HTML directly from the static folder.
 app.use((req, res, next) => {
     if (req.path === '/admin.html') {
