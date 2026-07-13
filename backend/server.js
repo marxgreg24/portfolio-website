@@ -9,6 +9,7 @@ const auth = require('./middleware/auth');
 const { initializeDatabase } = require('./scripts/migrate');
 
 // Route imports
+const adminAuthRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const skillsRoutes = require('./routes/skills');
 const projectsRoutes = require('./routes/projects');
@@ -17,13 +18,31 @@ const socialRoutes = require('./routes/social');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const ALLOW_START_WITHOUT_DB = process.env.ALLOW_START_WITHOUT_DB === 'true';
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || '')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
+
+function isAllowedOrigin(origin) {
+    if (!origin || allowedOrigins.length === 0) {
+        return true;
+    }
+
+    return allowedOrigins.includes(origin);
+}
 
 // Middleware
 app.use(helmet());
 app.use(compression());
 app.use(cors({
-    origin: '*',
-    credentials: true,
+    origin(origin, callback) {
+        if (isAllowedOrigin(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: false,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -33,16 +52,14 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Serve site images so the favicon can be loaded from the browser.
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.get(['/favicon.ico', '/images/portfolio.png'], (req, res) => {
+    const iconUrl = process.env.CLOUDINARY_SITE_ICON_URL;
 
-// Require auth before serving the admin HTML directly from the static folder.
-app.use((req, res, next) => {
-    if (req.path === '/admin.html') {
-        return auth(req, res, next);
+    if (!iconUrl) {
+        return res.status(503).json({ error: 'Site icon is not configured' });
     }
 
-    return next();
+    return res.redirect(302, iconUrl);
 });
 
 // Serve frontend files
@@ -114,6 +131,7 @@ app.get('/api/portfolio', async (req, res) => {
 });
 
 // API Routes
+app.use('/api', adminAuthRoutes);
 app.use('/api', profileRoutes);
 app.use('/api', skillsRoutes);
 app.use('/api', projectsRoutes);
@@ -125,7 +143,7 @@ app.get('/', (req, res) => {
 });
 
 // Serve admin.html for admin path
-app.get(['/admin', '/admin/'], auth, (req, res) => {
+app.get(['/admin', '/admin/'], (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/admin.html'));
 });
 

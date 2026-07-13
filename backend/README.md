@@ -6,8 +6,8 @@ A full-stack portfolio backend built with Node.js, Express, and PostgreSQL (Neon
 
 - ✅ RESTful API with Express.js
 - ✅ PostgreSQL database with Neon
-- ✅ Basic Authentication for admin panel
-- ✅ Profile management with image upload
+- ✅ Token-based admin authentication
+- ✅ Profile management with Cloudinary image upload
 - ✅ Dynamic skills, projects, and social links management
 - ✅ CORS enabled for frontend communication
 - ✅ Compression and security headers (Helmet)
@@ -43,10 +43,19 @@ DATABASE_URL=postgresql://user:password@host:port/portfolio_db
 # Admin Credentials
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=your_secure_password_here
+ADMIN_SESSION_SECRET=generate_a_long_random_secret
+ADMIN_SESSION_TTL_MINUTES=5
 
 # Server Configuration
 PORT=5000
 NODE_ENV=development
+
+# Cloudinary Settings
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_SITE_ICON_URL=https://res.cloudinary.com/...
+CLOUDINARY_SITE_ICON_NAME=portfolio.png
 
 # File Upload Settings
 MAX_FILE_SIZE=5242880
@@ -109,19 +118,23 @@ The server will start on `http://localhost:5000`
 - `PUT /api/social-links/:id` - Update social link (admin only)
 - `DELETE /api/social-links/:id` - Delete social link (admin only)
 
-## Authentication
+### Authentication
 
-The admin endpoints use Basic Authentication. Include credentials in request headers:
+The admin panel uses a login form that exchanges credentials for a short-lived token. The token stays in session storage and is cleared when the browser tab is closed.
 
-```
-Authorization: Basic base64(username:password)
-```
+Login endpoint:
 
-The frontend admin panel handles this automatically when you enter credentials.
+`POST /api/admin/login`
 
-## File Upload
+Protected admin requests send:
 
-Profile images are uploaded to the `/uploads` directory and served statically at `/uploads/filename`.
+`Authorization: Bearer <token>`
+
+### File Upload
+
+Profile images are uploaded to Cloudinary and stored as public URLs in the database.
+
+Run `npm run upload:icon` after configuring Cloudinary to upload the portfolio favicon from `backend/images/portfolio.png`.
 
 Maximum file size is set by `MAX_FILE_SIZE` in `.env` (default: 5MB)
 
@@ -134,7 +147,7 @@ backend/
 ├── config/
 │   └── db.js              # Database connection
 ├── middleware/
-│   └── auth.js            # Basic auth middleware
+│   └── auth.js            # Admin token and credential middleware
 ├── routes/
 │   ├── profile.js         # Profile endpoints
 │   ├── skills.js          # Skills endpoints
@@ -142,7 +155,7 @@ backend/
 │   └── social.js          # Social links endpoints
 ├── scripts/
 │   └── migrate.js         # Database initialization
-├── uploads/               # Profile image uploads
+├── uploads/               # Legacy local upload directory
 ├── server.js              # Main server file
 ├── package.json
 ├── .env.example
@@ -151,12 +164,38 @@ backend/
 
 ## Deployment
 
-### To Neon + Railway/Render:
+### Backend on Render
 
-1. Create accounts on [railway.app](https://railway.app) or [render.com](https://render.com)
-2. Connect your GitHub repository
-3. Set environment variables in the deployment platform
-4. Deploy!
+1. Create a new Render Web Service from the `backend` folder.
+2. Set the build command to `npm install`.
+3. Set the start command to `npm start`.
+4. Set these environment variables in Render:
+	- `DATABASE_URL`
+	- `ADMIN_USERNAME`
+	- `ADMIN_PASSWORD`
+	- `ADMIN_SESSION_SECRET`
+	- `FRONTEND_ORIGIN` set to your Vercel URL, for example `https://your-portfolio.vercel.app`
+	- `CLOUDINARY_CLOUD_NAME`
+	- `CLOUDINARY_API_KEY`
+	- `CLOUDINARY_API_SECRET`
+	- `CLOUDINARY_SITE_ICON_URL`
+	- `ALLOW_START_WITHOUT_DB=false`
+
+### Frontend on Vercel
+
+1. Create a new Vercel project from the `frontend` folder.
+2. Set the build command to `npm run build`.
+3. Set the output directory to `dist`.
+4. Set these environment variables in Vercel:
+	- `FRONTEND_API_BASE_URL` set to your Render backend URL, for example `https://your-backend.onrender.com`
+	- `FRONTEND_SITE_ICON_URL` set to the Cloudinary favicon URL, or leave it empty to use the default development value.
+5. Deploy both services and update the frontend environment with the live backend URL after Render finishes.
+
+### Recommended Flow
+
+1. Deploy the backend first on Render and copy its public URL.
+2. Set `FRONTEND_API_BASE_URL` and `FRONTEND_ORIGIN` before deploying the frontend.
+3. Deploy the frontend on Vercel and verify the API requests and favicon load from the cloud.
 
 ## Security Considerations
 
