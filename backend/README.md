@@ -191,6 +191,8 @@ backend/
 	- `FRONTEND_SITE_ICON_URL` set to the Cloudinary favicon URL, or leave it empty to use the default development value.
 5. Deploy both services and update the frontend environment with the live backend URL after Render finishes.
 
+If you deploy from the repository root instead of the `frontend` folder, use the root `vercel.json` in this project. It builds from `frontend/` and serves the generated files from `frontend/dist`.
+
 ### Recommended Flow
 
 1. Deploy the backend first on Render and copy its public URL.
