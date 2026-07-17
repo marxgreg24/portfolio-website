@@ -53,55 +53,118 @@ CREATE TABLE IF NOT EXISTS social_links (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- Insert default profile if it doesn't exist
-INSERT INTO profile (full_name, headline, email, phone, location, availability, linkedin_url, linkedin_label, github_url, hero_description, about_summary, about_story)
-VALUES (
-    'Mark Gregory Okiror',
-    'Full Stack, ML, Smart Contracts',
-    'okirormarkgreg24@gmail.com',
-    '+256 764 476 981',
-    'Entebbe, Uganda',
-    'Available for new opportunities',
-    'https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/',
-    'Mark Gregory Okiror',
-    'https://github.com/marxgreg24',
-    'I craft digital experiences that blend creativity with functionality. From stunning user interfaces to robust backend solutions, I bring ideas to life through code.',
-    'I''m a passionate developer with about 3 years of experience creating innovative digital solutions. My journey spans from crafting pixel-perfect user interfaces to architecting scalable backend systems.',
-    'I believe in the power of clean code, thoughtful design, and continuous learning. When I''m not coding, you''ll find me exploring new technologies or contributing to open-source projects.'
-)
-ON CONFLICT DO NOTHING;
-
--- Insert default skills if they don't exist
-INSERT INTO skills (name, sort_order) VALUES
-('JavaScript', 0),
-('HTML, EJS & CSS', 1),
-('Node.js', 2),
-('Python', 3),
-('UI/UX Design', 4),
-('SQL', 5),
-('AWS (basics)', 6),
-('Machine Learning & AI', 7)
-ON CONFLICT (name) DO NOTHING;
-
--- Insert default projects if they don't exist
-INSERT INTO projects (title, description, url, tech, sort_order) VALUES
-('Portfolio Website', 'A dynamic, full-stack portfolio website built with Node.js, Express, PostgreSQL, and Neon. Features a CMS admin panel for managing projects, skills, and profile information with real-time updates.', '/', 'Node.js, Express, PostgreSQL, Neon, JavaScript, CSS', 0),
-('MUST Accommodation Platform', 'A full-stack accommodation platform that facilitates bookings and management for students and staff at Mbarara University.', '#', 'EJS, CSS, Node.js, JavaScript, PostgreSQL', 1)
-ON CONFLICT DO NOTHING;
-
--- Insert default social links if they don't exist
-INSERT INTO social_links (platform, icon_class, url, sort_order) VALUES
-('Email', 'fas fa-envelope', 'mailto:okirormarkgreg24@gmail.com', 0),
-('LinkedIn', 'fab fa-linkedin', 'https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/', 1),
-('GitHub', 'fab fa-github', 'https://github.com/marxgreg24', 2)
-ON CONFLICT DO NOTHING;
 `;
+
+const defaultProfile = {
+    fullName: 'Mark Gregory Okiror',
+    headline: 'Full Stack, ML, Smart Contracts',
+    email: 'okirormarkgreg24@gmail.com',
+    phone: '+256 764 476 981',
+    location: 'Entebbe, Uganda',
+    availability: 'Available for new opportunities',
+    linkedinUrl: 'https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/',
+    linkedinLabel: 'Mark Gregory Okiror',
+    githubUrl: 'https://github.com/marxgreg24',
+    heroDescription: 'I craft digital experiences that blend creativity with functionality. From stunning user interfaces to robust backend solutions, I bring ideas to life through code.',
+    aboutSummary: "I'm a passionate developer with about 3 years of experience creating innovative digital solutions. My journey spans from crafting pixel-perfect user interfaces to architecting scalable backend systems.",
+    aboutStory: "I believe in the power of clean code, thoughtful design, and continuous learning. When I'm not coding, you will find me exploring new technologies and improving my skills through projects."
+};
+
+const defaultSkills = [
+    { name: 'JavaScript', sortOrder: 0 },
+    { name: 'HTML, EJS & CSS', sortOrder: 1 },
+    { name: 'Node.js', sortOrder: 2 },
+    { name: 'Python', sortOrder: 3 },
+    { name: 'UI/UX Design', sortOrder: 4 },
+    { name: 'SQL', sortOrder: 5 },
+    { name: 'AWS (basics)', sortOrder: 6 },
+    { name: 'Machine Learning & AI', sortOrder: 7 }
+];
+
+const defaultProjects = [
+    {
+        title: 'Portfolio Website',
+        description: 'A dynamic, full-stack portfolio website built with Node.js, Express, PostgreSQL, and Neon. Features a CMS admin panel for managing projects, skills, and profile information with real-time updates.',
+        url: '/',
+        tech: 'Node.js, Express, PostgreSQL, Neon, JavaScript, CSS',
+        sortOrder: 0
+    },
+    {
+        title: 'MUST Accommodation Platform',
+        description: 'A full-stack accommodation platform that facilitates bookings and management for students and staff at Mbarara University.',
+        url: '#',
+        tech: 'EJS, CSS, Node.js, JavaScript, PostgreSQL',
+        sortOrder: 1
+    }
+];
+
+const defaultSocialLinks = [
+    { platform: 'Email', iconClass: 'fas fa-envelope', url: 'mailto:okirormarkgreg24@gmail.com', sortOrder: 0 },
+    { platform: 'LinkedIn', iconClass: 'fab fa-linkedin', url: 'https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/', sortOrder: 1 },
+    { platform: 'GitHub', iconClass: 'fab fa-github', url: 'https://github.com/marxgreg24', sortOrder: 2 }
+];
+
+async function seedTableIfEmpty(tableName, insertSql, values) {
+    const existing = await pool.query(`SELECT 1 FROM ${tableName} LIMIT 1`);
+
+    if (existing.rows.length > 0) {
+        return false;
+    }
+
+    await pool.query(insertSql, values);
+    return true;
+}
+
+async function seedInitialData() {
+    const profileSeeded = await seedTableIfEmpty(
+        'profile',
+        `INSERT INTO profile (
+            full_name, headline, email, phone, location, availability,
+            linkedin_url, linkedin_label, github_url, hero_description,
+            about_summary, about_story
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        [
+            defaultProfile.fullName,
+            defaultProfile.headline,
+            defaultProfile.email,
+            defaultProfile.phone,
+            defaultProfile.location,
+            defaultProfile.availability,
+            defaultProfile.linkedinUrl,
+            defaultProfile.linkedinLabel,
+            defaultProfile.githubUrl,
+            defaultProfile.heroDescription,
+            defaultProfile.aboutSummary,
+            defaultProfile.aboutStory
+        ]
+    );
+
+    const skillsSeeded = await seedTableIfEmpty(
+        'skills',
+        'INSERT INTO skills (name, sort_order) VALUES ' + defaultSkills.map((_, index) => `($${index * 2 + 1}, $${index * 2 + 2})`).join(', '),
+        defaultSkills.flatMap(skill => [skill.name, skill.sortOrder])
+    );
+
+    const projectsSeeded = await seedTableIfEmpty(
+        'projects',
+        'INSERT INTO projects (title, description, url, tech, sort_order) VALUES ' + defaultProjects.map((_, index) => `($${index * 5 + 1}, $${index * 5 + 2}, $${index * 5 + 3}, $${index * 5 + 4}, $${index * 5 + 5})`).join(', '),
+        defaultProjects.flatMap(project => [project.title, project.description, project.url, project.tech, project.sortOrder])
+    );
+
+    const socialSeeded = await seedTableIfEmpty(
+        'social_links',
+        'INSERT INTO social_links (platform, icon_class, url, sort_order) VALUES ' + defaultSocialLinks.map((_, index) => `($${index * 4 + 1}, $${index * 4 + 2}, $${index * 4 + 3}, $${index * 4 + 4})`).join(', '),
+        defaultSocialLinks.flatMap(link => [link.platform, link.iconClass, link.url, link.sortOrder])
+    );
+
+    return { profileSeeded, skillsSeeded, projectsSeeded, socialSeeded };
+}
 
 async function initializeDatabase() {
     try {
         console.log('Initializing database schema...');
         await pool.query(schema);
+        await seedInitialData();
         console.log('Database schema initialized successfully!');
     } catch (error) {
         console.error('Error initializing database:', error);

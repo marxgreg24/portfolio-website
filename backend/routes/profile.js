@@ -74,6 +74,27 @@ router.put('/profile', auth, async (req, res) => {
     } = req.body;
 
     try {
+        const currentResult = await pool.query('SELECT * FROM profile WHERE id = 1 LIMIT 1');
+
+        if (currentResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        const current = currentResult.rows[0];
+        const nextFullName = fullName ?? current.full_name;
+        const nextHeadline = headline ?? current.headline;
+        const nextEmail = email ?? current.email;
+        const nextPhone = phone ?? current.phone;
+        const nextLocation = location ?? current.location;
+        const nextAvailability = availability ?? current.availability;
+        const nextLinkedinUrl = linkedinUrl ?? current.linkedin_url;
+        const nextLinkedinLabel = linkedinLabel ?? current.linkedin_label;
+        const nextGithubUrl = githubUrl ?? current.github_url;
+        const nextProfileImageUrl = profileImageUrl ?? current.profile_image_url;
+        const nextHeroDescription = heroDescription ?? current.hero_description;
+        const nextAboutSummary = aboutSummary ?? current.about_summary;
+        const nextAboutStory = aboutStory ?? current.about_story;
+
         const result = await pool.query(
             `UPDATE profile 
              SET full_name = $1, headline = $2, email = $3, phone = $4, 
@@ -81,22 +102,23 @@ router.put('/profile', auth, async (req, res) => {
                  linkedin_label = $8, github_url = $9, profile_image_url = $10,
                  hero_description = $11, about_summary = $12, about_story = $13,
                  updated_at = CURRENT_TIMESTAMP
-             WHERE id = 1
+             WHERE id = $14
              RETURNING *`,
             [
-                fullName,
-                headline,
-                email,
-                phone,
-                location,
-                availability,
-                linkedinUrl,
-                linkedinLabel,
-                githubUrl,
-                profileImageUrl,
-                heroDescription,
-                aboutSummary,
-                aboutStory
+                nextFullName,
+                nextHeadline,
+                nextEmail,
+                nextPhone,
+                nextLocation,
+                nextAvailability,
+                nextLinkedinUrl,
+                nextLinkedinLabel,
+                nextGithubUrl,
+                nextProfileImageUrl,
+                nextHeroDescription,
+                nextAboutSummary,
+                nextAboutStory,
+                current.id
             ]
         );
 
