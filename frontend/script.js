@@ -61,6 +61,26 @@ function apiUrl(path) {
     return `${baseUrl}${normalizedPath}`;
 }
 
+function updateProfileImageCaption(profileImageUrl) {
+    const caption = document.getElementById('profile-image-caption');
+
+    if (!caption) {
+        return;
+    }
+
+    if (profileImageUrl && /res\.cloudinary\.com/.test(profileImageUrl)) {
+        caption.textContent = 'Live profile photo from Cloudinary';
+        return;
+    }
+
+    if (profileImageUrl) {
+        caption.textContent = 'Live profile photo';
+        return;
+    }
+
+    caption.textContent = 'Profile photo';
+}
+
 // Typewriter animation for the hero title text.
 function typeWriter(element, text, speed = 80) {
     let i = 0;
@@ -419,6 +439,8 @@ function applyPortfolioData(data) {
         profileImage.alt = profile.fullName;
     }
 
+    updateProfileImageCaption(profile.profileImageUrl);
+
     const emailLink = document.getElementById('contact-email');
     if (emailLink) {
         emailLink.textContent = profile.email;
@@ -462,6 +484,19 @@ async function initializePortfolioPage() {
 
     const portfolioData = await fetchPortfolio();
     applyPortfolioData(portfolioData);
+
+    window.addEventListener('storage', (event) => {
+        if (event.key !== 'portfolioProfileImageUrl' || !event.newValue) {
+            return;
+        }
+
+        const profileImage = document.getElementById('profile-image');
+        if (profileImage) {
+            profileImage.src = event.newValue;
+        }
+
+        updateProfileImageCaption(event.newValue);
+    });
 }
 
 // Start when the initial HTML document is ready.

@@ -4,38 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Admin</title>
-    <link rel="stylesheet" href="./admin.css">
-    <script src="./config.js"></script>
-    <script>
-        (function () {
-            const config = window.__APP_CONFIG__ || {};
-            const iconUrl = config.siteIconUrl || '/favicon.ico';
-
-            const iconLink = document.createElement('link');
-            iconLink.rel = 'icon';
-            iconLink.href = iconUrl;
-            document.head.appendChild(iconLink);
-
-            const appleIconLink = document.createElement('link');
-            appleIconLink.rel = 'apple-touch-icon';
-            appleIconLink.href = iconUrl;
-            document.head.appendChild(appleIconLink);
-        }());
-    </script>
+    <link rel="stylesheet" href="/admin.css">
+    <script src="/config.js"></script>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/favicon.ico">
 </head>
 <body>
-    <section id="login-shell" class="auth-shell">
-        <div class="auth-card panel">
-            <h1>Portfolio CMS</h1>
-            <p>Sign in to manage your profile, skills, projects, and social links.</p>
-            <form id="login-form" class="auth-form">
-                <label>Username<input name="username" autocomplete="username" required></label>
-                <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-                <button type="submit" class="btn-primary">Sign In</button>
-            </form>
-        </div>
-    </section>
-
     <div id="notification" class="notification" role="status" aria-live="polite" hidden></div>
 
     <main id="dashboard-shell" class="admin-shell" hidden>
@@ -123,6 +97,6 @@
         <p id="status" class="status"></p>
     </main>
 
-    <script src="./admin.js" defer></script>
+    <script src="/admin.js" defer></script>
 </body>
 </html>

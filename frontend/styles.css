@@ -590,6 +590,14 @@
             transition: transform 0.3s ease;
         }
 
+        .hero-image-caption {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            letter-spacing: 0.02em;
+        }
+
         .image-border {
             position: absolute;
             top: -15px;
@@ -617,6 +625,10 @@
                 width: 200px;
                 height: 200px;
                 margin-top: 2rem;
+            }
+
+            .hero-image-caption {
+                font-size: 0.9rem;
             }
         }
 

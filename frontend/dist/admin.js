@@ -1,21 +1,45 @@
-const loginShell = document.getElementById('login-shell');
-const dashboardShell = document.getElementById('dashboard-shell');
 const loginForm = document.getElementById('login-form');
 const logoutButton = document.getElementById('logout-button');
 const statusEl = document.getElementById('status');
 const notificationEl = document.getElementById('notification');
+const dashboardShell = document.getElementById('dashboard-shell');
+const loginShell = document.getElementById('login-shell');
 
 const TOKEN_STORAGE_KEY = 'adminSessionToken';
 let adminToken = sessionStorage.getItem(TOKEN_STORAGE_KEY) || '';
 
 function getApiBaseUrl() {
-    return (window.__APP_CONFIG__ && window.__APP_CONFIG__.apiBaseUrl) || '';
+    const configuredBaseUrl = (window.__APP_CONFIG__ && window.__APP_CONFIG__.apiBaseUrl) || '';
+
+    if (configuredBaseUrl) {
+        return configuredBaseUrl;
+    }
+
+    const isLocalDev = window.location.protocol === 'file:'
+        || window.location.hostname === 'localhost'
+        || window.location.hostname === '127.0.0.1';
+
+    if (isLocalDev) {
+        return 'http://localhost:3000';
+    }
+
+    return '';
 }
 
 function apiUrl(path) {
     const baseUrl = getApiBaseUrl().replace(/\/+$/, '');
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     return `${baseUrl}${normalizedPath}`;
+}
+
+function getLoginEndpointHint() {
+    const baseUrl = getApiBaseUrl().trim();
+
+    if (!baseUrl) {
+        return 'The admin API base URL is not configured for this deployment.';
+    }
+
+    return `Expected backend at ${baseUrl}.`;
 }
 
 function getAuthHeader() {
@@ -37,13 +61,23 @@ function clearToken() {
 }
 
 function showLoginView() {
-    loginShell.hidden = false;
-    dashboardShell.hidden = true;
+    if (loginShell) {
+        loginShell.hidden = false;
+    }
+
+    if (dashboardShell) {
+        dashboardShell.hidden = true;
+    }
 }
 
 function showDashboardView() {
-    loginShell.hidden = true;
-    dashboardShell.hidden = false;
+    if (loginShell) {
+        loginShell.hidden = true;
+    }
+
+    if (dashboardShell) {
+        dashboardShell.hidden = false;
+    }
 }
 
 // Display a user-facing status message with contextual color.
@@ -181,23 +215,59 @@ async function loadProfile() {
 }
 
 async function login(username, password) {
-    const response = await fetch(apiUrl('/api/admin/login'), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    });
+    if (!username || !password) {
+        throw new Error('Enter both username and password.');
+    }
 
-    const data = await response.json();
+    if (!getApiBaseUrl().trim() && window.location.protocol === 'file:') {
+        throw new Error('This admin page needs to be served through the app backend so it can reach /api/admin/login.');
+    }
+
+    let response;
+
+    try {
+        response = await fetch(apiUrl('/api/admin/login'), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+    } catch (error) {
+        throw new Error(`Unable to reach the admin API. ${getLoginEndpointHint()}`);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    let data = null;
+
+    if (contentType.includes('application/json')) {
+        try {
+            data = await response.json();
+        } catch (error) {
+            data = null;
+        }
+    } else {
+        const text = (await response.text()).trim();
+        data = text ? { error: text } : null;
+    }
 
     if (!response.ok) {
-        throw new Error(data.error || 'Login failed.');
+        if (response.status === 401) {
+            throw new Error('Invalid admin credentials. Check the username and password in your backend environment.');
+        }
+
+        if (response.status === 404) {
+            throw new Error(`The admin login endpoint was not found. ${getLoginEndpointHint()}`);
+        }
+
+        throw new Error((data && (data.error || data.message)) || `Login failed with status ${response.status}.`);
+    }
+
+    if (!data || !data.token) {
+        throw new Error('The admin API did not return a session token.');
     }
 
     persistToken(data.token);
-    showDashboardView();
-    showNotification('Signed in successfully.', 'success');
 }
 
 async function verifySession() {
@@ -205,18 +275,23 @@ async function verifySession() {
         return false;
     }
 
-    const response = await fetch(apiUrl('/api/admin/session'), {
-        headers: {
-            ...getAuthHeader()
-        }
-    });
+    try {
+        const response = await fetch(apiUrl('/api/admin/session'), {
+            headers: {
+                ...getAuthHeader()
+            }
+        });
 
-    if (!response.ok) {
+        if (!response.ok) {
+            clearToken();
+            return false;
+        }
+
+        return true;
+    } catch (error) {
         clearToken();
         return false;
     }
-
-    return true;
 }
 
 async function loadDashboardData() {
@@ -409,200 +484,260 @@ async function loadSocialLinks() {
 }
 
 // Save profile changes.
-profileForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+if (profileForm) {
+    profileForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    try {
-        const payload = getFormData(profileForm);
-        await api('/api/profile', {
-            method: 'PUT',
-            body: JSON.stringify(payload)
-        });
-        showNotification('Profile saved successfully.', 'success');
-        await loadProfile();
-    } catch (error) {
-        showNotification(`Failed to save profile: ${error.message}`, 'error');
-    }
-});
+        try {
+            const payload = getFormData(profileForm);
+            await api('/api/profile', {
+                method: 'PUT',
+                body: JSON.stringify(payload)
+            });
+            showNotification('Profile saved successfully.', 'success');
+            await loadProfile();
+        } catch (error) {
+            showNotification(`Failed to save profile: ${error.message}`, 'error');
+        }
+    });
+}
 
 // Upload a new profile image using multipart/form-data.
-imageForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+if (imageForm) {
+    imageForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    try {
-        const fileInput = document.getElementById('profileImage');
-        const file = fileInput.files[0];
-        if (!file) {
-            showNotification('Please choose an image file first.', 'error');
-            return;
+        try {
+            const fileInput = document.getElementById('profileImage');
+            const file = fileInput.files[0];
+            if (!file) {
+                showNotification('Please choose an image file first.', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('profileImage', file);
+
+            const response = await fetch(apiUrl('/api/profile-image'), {
+                method: 'POST',
+                body: formData,
+                headers: getAuthHeader()
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Image upload failed.');
+            }
+
+            showNotification('Profile image uploaded successfully.', 'success');
+            currentImageUrlEl.textContent = `Current image: ${data.imageUrl}`;
+            try {
+                window.localStorage.setItem('portfolioProfileImageUrl', data.imageUrl);
+            } catch (storageError) {
+                // Ignore storage failures and keep the upload flow working.
+            }
+
+            // Update the profile form's input to align with the new image URL
+            if (profileForm && profileForm.elements.profileImageUrl) {
+                profileForm.elements.profileImageUrl.value = data.imageUrl;
+            }
+
+            await loadProfile();
+
+            imageForm.reset();
+        } catch (error) {
+            showNotification(`Profile image upload failed: ${error.message}`, 'error');
         }
-
-        const formData = new FormData();
-        formData.append('profileImage', file);
-
-        const response = await fetch(apiUrl('/api/profile-image'), {
-            method: 'POST',
-            body: formData,
-            headers: getAuthHeader()
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error || 'Image upload failed.');
-        }
-
-        showNotification('Profile image uploaded successfully.', 'success');
-        currentImageUrlEl.textContent = `Current image: ${data.imageUrl}`;
-        
-        // Update the profile form's input to align with the new image URL
-        if (profileForm.elements.profileImageUrl) {
-            profileForm.elements.profileImageUrl.value = data.imageUrl;
-        }
-
-        imageForm.reset();
-    } catch (error) {
-        showNotification(`Profile image upload failed: ${error.message}`, 'error');
-    }
-});
+    });
+}
 
 // Create or update a skill depending on whether an id is present.
-skillForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+if (skillForm) {
+    skillForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    try {
-        const payload = getFormData(skillForm);
-        if (payload.id) {
-            await api(`/api/skills/${payload.id}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                    name: payload.name,
-                    sortOrder: payload.sortOrder
-                })
-            });
-            showNotification('Skill updated.', 'success');
-        } else {
-            await api('/api/skills', {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: payload.name,
-                    sortOrder: payload.sortOrder
-                })
-            });
-            showNotification('Skill added.', 'success');
+        try {
+            const payload = getFormData(skillForm);
+            if (payload.id) {
+                await api(`/api/skills/${payload.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        name: payload.name,
+                        sortOrder: payload.sortOrder
+                    })
+                });
+                showNotification('Skill updated.', 'success');
+            } else {
+                await api('/api/skills', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: payload.name,
+                        sortOrder: payload.sortOrder
+                    })
+                });
+                showNotification('Skill added.', 'success');
+            }
+
+            resetForm(skillForm);
+            await loadSkills();
+        } catch (error) {
+            showNotification(`Failed to save skill: ${error.message}`, 'error');
         }
-
-        resetForm(skillForm);
-        await loadSkills();
-    } catch (error) {
-        showNotification(`Failed to save skill: ${error.message}`, 'error');
-    }
-});
+    });
+}
 
 // Manual reset switches the form back to create mode.
-document.getElementById('skill-reset').addEventListener('click', () => resetForm(skillForm));
+const skillResetButton = document.getElementById('skill-reset');
+if (skillResetButton) {
+    skillResetButton.addEventListener('click', () => resetForm(skillForm));
+}
 
 // Create or update a project depending on whether an id is present.
-projectForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+if (projectForm) {
+    projectForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    try {
-        const payload = getFormData(projectForm);
-        const requestPayload = {
-            title: payload.title,
-            description: payload.description,
-            url: payload.url,
-            tech: payload.tech,
-            sortOrder: payload.sortOrder
-        };
+        try {
+            const payload = getFormData(projectForm);
+            const requestPayload = {
+                title: payload.title,
+                description: payload.description,
+                url: payload.url,
+                tech: payload.tech,
+                sortOrder: payload.sortOrder
+            };
 
-        if (payload.id) {
-            await api(`/api/projects/${payload.id}`, {
-                method: 'PUT',
-                body: JSON.stringify(requestPayload)
-            });
-            showNotification('Project updated.', 'success');
-        } else {
-            await api('/api/projects', {
-                method: 'POST',
-                body: JSON.stringify(requestPayload)
-            });
-            showNotification('Project added.', 'success');
+            if (payload.id) {
+                await api(`/api/projects/${payload.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(requestPayload)
+                });
+                showNotification('Project updated.', 'success');
+            } else {
+                await api('/api/projects', {
+                    method: 'POST',
+                    body: JSON.stringify(requestPayload)
+                });
+                showNotification('Project added.', 'success');
+            }
+
+            resetForm(projectForm);
+            await loadProjects();
+        } catch (error) {
+            showNotification(`Failed to save project: ${error.message}`, 'error');
         }
-
-        resetForm(projectForm);
-        await loadProjects();
-    } catch (error) {
-        showNotification(`Failed to save project: ${error.message}`, 'error');
-    }
-});
+    });
+}
 
 // Reset project form state.
-document.getElementById('project-reset').addEventListener('click', () => resetForm(projectForm));
+const projectResetButton = document.getElementById('project-reset');
+if (projectResetButton) {
+    projectResetButton.addEventListener('click', () => resetForm(projectForm));
+}
 
 // Create or update a social link depending on whether an id is present.
-socialForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+if (socialForm) {
+    socialForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    try {
-        const payload = getFormData(socialForm);
-        const requestPayload = {
-            platform: payload.platform,
-            iconClass: payload.iconClass,
-            url: payload.url,
-            sortOrder: payload.sortOrder
-        };
+        try {
+            const payload = getFormData(socialForm);
+            const requestPayload = {
+                platform: payload.platform,
+                iconClass: payload.iconClass,
+                url: payload.url,
+                sortOrder: payload.sortOrder
+            };
 
-        if (payload.id) {
-            await api(`/api/social-links/${payload.id}`, {
-                method: 'PUT',
-                body: JSON.stringify(requestPayload)
-            });
-            showNotification('Social link updated.', 'success');
-        } else {
-            await api('/api/social-links', {
-                method: 'POST',
-                body: JSON.stringify(requestPayload)
-            });
-            showNotification('Social link added.', 'success');
+            if (payload.id) {
+                await api(`/api/social-links/${payload.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(requestPayload)
+                });
+                showNotification('Social link updated.', 'success');
+            } else {
+                await api('/api/social-links', {
+                    method: 'POST',
+                    body: JSON.stringify(requestPayload)
+                });
+                showNotification('Social link added.', 'success');
+            }
+
+            resetForm(socialForm);
+            await loadSocialLinks();
+        } catch (error) {
+            showNotification(`Failed to save social link: ${error.message}`, 'error');
         }
-
-        resetForm(socialForm);
-        await loadSocialLinks();
-    } catch (error) {
-        showNotification(`Failed to save social link: ${error.message}`, 'error');
-    }
-});
+    });
+}
 
 // Reset social-link form state.
-document.getElementById('social-reset').addEventListener('click', () => resetForm(socialForm));
+const socialResetButton = document.getElementById('social-reset');
+if (socialResetButton) {
+    socialResetButton.addEventListener('click', () => resetForm(socialForm));
+}
 
-loginForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+if (loginForm) {
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    try {
-        const formData = new FormData(loginForm);
-        await login(formData.get('username'), formData.get('password'));
-        await loadDashboardData();
-    } catch (error) {
-        showNotification(`Sign in failed: ${error.message}`, 'error');
-    }
-});
+        const submitButton = loginForm.querySelector('button[type="submit"]');
 
-logoutButton.addEventListener('click', async () => {
-    clearToken();
-    loginForm.reset();
-    showLoginView();
-    showNotification('Signed out.', 'success');
-});
+        try {
+            const formData = new FormData(loginForm);
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Signing in...';
+            }
+
+            showNotification('Signing in...', 'info', false);
+            await login(formData.get('username'), formData.get('password'));
+            window.location.assign('/admin');
+        } catch (error) {
+            showNotification(`Sign in failed: ${error.message}`, 'error');
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Sign In';
+            }
+        }
+    });
+}
+
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        clearToken();
+        try {
+            await fetch(apiUrl('/api/admin/logout'), {
+                method: 'POST'
+            });
+        } catch (error) {
+            // Logout is best-effort; local session clearing is the important part.
+        }
+
+        window.location.assign('/');
+    });
+}
 
 // Bootstrap all dashboard data concurrently for faster initial load.
 async function init() {
     try {
         const authenticated = await verifySession();
 
-        if (!authenticated) {
+        if (loginForm && !dashboardShell) {
+            if (authenticated) {
+                window.location.replace('/admin');
+                return;
+            }
+
             showLoginView();
             showNotification('Sign in to open the admin dashboard.', 'info');
+            return;
+        }
+
+        if (!authenticated) {
+            clearToken();
+            window.location.replace('/admin/login');
             return;
         }
 

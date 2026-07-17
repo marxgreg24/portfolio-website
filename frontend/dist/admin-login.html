@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Admin Login</title>
+    <link rel="stylesheet" href="/admin.css">
+    <script src="/config.js"></script>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+</head>
+<body>
+    <div id="notification" class="notification" role="status" aria-live="polite" hidden></div>
+
+    <section id="login-shell" class="admin-login-shell">
+        <div class="auth-card panel">
+            <h1>Portfolio CMS</h1>
+            <p>Sign in to manage your profile, skills, projects, and social links.</p>
+            <form id="login-form" class="auth-form">
+                <label>Username<input name="username" autocomplete="username" required></label>
+                <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+            <a class="back-link" href="/">Back to Portfolio</a>
+        </div>
+    </section>
+
+    <script src="/admin.js" defer></script>
+</body>
+</html>

@@ -31,7 +31,7 @@ function writeRuntimeConfig() {
 function build() {
     ensureDistDir();
 
-    ['index.html', 'admin.html', 'styles.css', 'admin.css', 'script.js', 'admin.js'].forEach(copyFile);
+    ['index.html', 'admin.html', 'admin-login.html', 'styles.css', 'admin.css', 'script.js', 'admin.js'].forEach(copyFile);
     writeRuntimeConfig();
 
     console.log('Frontend build complete. Output written to frontend/dist.');
