@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 const ALLOW_START_WITHOUT_DB = process.env.ALLOW_START_WITHOUT_DB === 'true';
 const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:3000')
     .split(',')
-    .map(origin => origin.trim())
+    .map(origin => origin.trim().replace(/\/+$/, ''))
     .filter(Boolean);
 
 function isAllowedOrigin(origin) {
@@ -28,7 +28,30 @@ function isAllowedOrigin(origin) {
         return true;
     }
 
-    return allowedOrigins.includes(origin);
+    const normalizedOrigin = origin.replace(/\/+$/, '');
+
+    if (allowedOrigins.includes(normalizedOrigin)) {
+        return true;
+    }
+
+    try {
+        const parsedOrigin = new URL(normalizedOrigin);
+        const isLocalhost = ['localhost', '127.0.0.1', '::1'].includes(parsedOrigin.hostname);
+
+        if (isLocalhost) {
+            return true;
+        }
+
+        const isPortfolioVercelHost = /^portfolio-website-[a-z0-9-]+\.vercel\.app$/.test(parsedOrigin.hostname);
+
+        if (isPortfolioVercelHost) {
+            return true;
+        }
+    } catch (error) {
+        return false;
+    }
+
+    return false;
 }
 
 // Middleware
@@ -40,7 +63,8 @@ app.use(cors({
             return callback(null, true);
         }
 
-        return callback(new Error('Not allowed by CORS'));
+        console.warn('CORS blocked origin:', origin || '(no origin)', 'Allowed origins:', allowedOrigins.join(', ') || '(none)');
+        return callback(new Error(`Not allowed by CORS: ${origin || '(no origin)'}`));
     },
     credentials: false,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -140,6 +164,11 @@ app.use('/api', socialRoutes);
 // Serve index.html for root path
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// Serve the admin login page separately from the dashboard.
+app.get(['/admin/login', '/admin/login/'], (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/admin-login.html'));
 });
 
 // Serve admin.html for admin path
