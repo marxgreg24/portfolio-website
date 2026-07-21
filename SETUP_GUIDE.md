@@ -258,11 +258,11 @@ Error: relation "profile" already exists
 
 ### Port Already in Use
 ```
-Error: listen EADDRINUSE: address already in use :::5000
+Error: listen EADDRINUSE: address already in use :::3000
 ```
 ```bash
-# Kill process on port 5000
-lsof -ti:5000 | xargs kill -9
+# Kill process on port 3000
+lsof -ti:3000 | xargs kill -9
 # Or use different port
 PORT=3000 npm run dev
 ```
@@ -280,7 +280,7 @@ No changes needed to `index.html`, `script.js`, or `admin.js` - they work out of
 
 ### Add a New Project:
 
-1. Go to http://localhost:5000/admin
+1. Go to http://localhost:3000/admin
 2. Scroll to "Projects" section
 3. Enter project details:
    - Title: "My New Project"
@@ -292,7 +292,7 @@ No changes needed to `index.html`, `script.js`, or `admin.js` - they work out of
 
 ### Edit Profile Picture:
 
-1. Go to http://localhost:5000/admin
+1. Go to http://localhost:3000/admin
 2. Scroll to "Profile Picture Upload"
 3. Click "Choose File" and select new image
 4. Click "Upload"

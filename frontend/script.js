@@ -206,6 +206,45 @@ function observeDynamicFadeInElements() {
     });
 }
 
+// Collapsible navigation for small viewports.
+function setupMobileNav() {
+    const navbar = document.getElementById('navbar');
+    const toggle = navbar?.querySelector('.nav-toggle');
+    const menu = document.getElementById('nav-menu');
+
+    if (!navbar || !toggle || !menu) {
+        return;
+    }
+
+    const setMenuOpen = (isOpen) => {
+        navbar.classList.toggle('nav-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    };
+
+    toggle.addEventListener('click', () => {
+        setMenuOpen(!navbar.classList.contains('nav-open'));
+    });
+
+    menu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            setMenuOpen(false);
+        });
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            setMenuOpen(false);
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            setMenuOpen(false);
+        }
+    });
+}
+
 // Change navbar appearance once the user scrolls away from the hero.
 function setupNavbarScrollState() {
     window.addEventListener('scroll', () => {
@@ -474,6 +513,7 @@ function applyPortfolioData(data) {
 async function initializePortfolioPage() {
     setupSmoothScroll();
     setupNavHighlighting();
+    setupMobileNav();
 
     const particles = createParticles();
     setupParticleMouseEffect(particles);
