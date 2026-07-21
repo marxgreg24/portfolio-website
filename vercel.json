@@ -1,4 +1,8 @@
 {
   "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/dist"
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    { "source": "/admin/login", "destination": "/admin-login.html" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ]
 }

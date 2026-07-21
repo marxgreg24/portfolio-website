@@ -19,8 +19,8 @@ function getApiBaseUrl() {
         || window.location.hostname === 'localhost'
         || window.location.hostname === '127.0.0.1';
 
-    if (isLocalDev) {
-        return 'http://localhost:3000';
+    if (isLocalDev && window.location.protocol !== 'file:') {
+        return window.location.origin;
     }
 
     return '';
@@ -78,6 +78,10 @@ function showDashboardView() {
     if (dashboardShell) {
         dashboardShell.hidden = false;
     }
+}
+
+function redirectToAdminLogin() {
+    window.location.replace('/admin/login');
 }
 
 // Display a user-facing status message with contextual color.
@@ -146,7 +150,13 @@ async function api(path, options = {}) {
 
     if (response.status === 401) {
         clearToken();
-        showLoginView();
+
+        if (dashboardShell && !loginShell) {
+            redirectToAdminLogin();
+        } else {
+            showLoginView();
+        }
+
         throw new Error('Your admin session expired. Please sign in again.');
     }
 
@@ -220,7 +230,7 @@ async function login(username, password) {
     }
 
     if (!getApiBaseUrl().trim() && window.location.protocol === 'file:') {
-        throw new Error('This admin page needs to be served through the app backend so it can reach /api/admin/login.');
+        throw new Error('Open this page through your deployed site or local dev server so it can reach the admin API.');
     }
 
     let response;
@@ -715,7 +725,7 @@ if (logoutButton) {
             // Logout is best-effort; local session clearing is the important part.
         }
 
-        window.location.assign('/');
+        redirectToAdminLogin();
     });
 }
 
@@ -737,7 +747,7 @@ async function init() {
 
         if (!authenticated) {
             clearToken();
-            window.location.replace('/admin/login');
+            redirectToAdminLogin();
             return;
         }
 

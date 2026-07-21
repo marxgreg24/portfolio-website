@@ -43,8 +43,9 @@ function isAllowedOrigin(origin) {
         }
 
         const isPortfolioVercelHost = /^portfolio-website-[a-z0-9-]+\.vercel\.app$/.test(parsedOrigin.hostname);
+        const isVercelPreviewHost = parsedOrigin.hostname.endsWith('.vercel.app');
 
-        if (isPortfolioVercelHost) {
+        if (isPortfolioVercelHost || isVercelPreviewHost) {
             return true;
         }
     } catch (error) {
@@ -212,6 +213,7 @@ async function startServer() {
     app.listen(PORT, () => {
         console.log(`✓ Server is running on http://localhost:${PORT}`);
         console.log(`✓ Portfolio: http://localhost:${PORT}`);
+        console.log(`✓ Admin Login: http://localhost:${PORT}/admin/login`);
         console.log(`✓ Admin Panel: http://localhost:${PORT}/admin`);
         if (!dbConnected) {
             console.log('⚠️  Database is not connected - degraded mode active');
