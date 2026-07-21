@@ -17,17 +17,37 @@
     <div id="site-notice" class="site-notice" role="status" aria-live="polite" hidden></div>
 
     <nav id="navbar">
-        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
-            <span class="nav-toggle-bar" aria-hidden="true"></span>
-            <span class="nav-toggle-bar" aria-hidden="true"></span>
-            <span class="nav-toggle-bar" aria-hidden="true"></span>
-        </button>
         <ul id="nav-menu" class="nav-menu">
-            <li><a href="#home" class="nav-link active">Home</a></li>
-            <li><a href="#about" class="nav-link">About</a></li>
-            <li><a href="#projects" class="nav-link">Projects</a></li>
-            <li><a href="#contact" class="nav-link">Contact</a></li>
-            <li><a href="/admin/login">Admin</a></li>
+            <li>
+                <a href="#home" class="nav-link active" data-nav-label="Home" aria-label="Home">
+                    <i class="nav-icon fa-solid fa-house" aria-hidden="true"></i>
+                    <span class="nav-link-text">Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="#about" class="nav-link" data-nav-label="About" aria-label="About">
+                    <i class="nav-icon fa-solid fa-user" aria-hidden="true"></i>
+                    <span class="nav-link-text">About</span>
+                </a>
+            </li>
+            <li>
+                <a href="#projects" class="nav-link" data-nav-label="Projects" aria-label="Projects">
+                    <i class="nav-icon fa-solid fa-folder-open" aria-hidden="true"></i>
+                    <span class="nav-link-text">Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="#contact" class="nav-link" data-nav-label="Contact" aria-label="Contact">
+                    <i class="nav-icon fa-solid fa-envelope" aria-hidden="true"></i>
+                    <span class="nav-link-text">Contact</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/login" data-nav-label="Admin" aria-label="Admin">
+                    <i class="nav-icon fa-solid fa-lock" aria-hidden="true"></i>
+                    <span class="nav-link-text">Admin</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
@@ -47,7 +67,6 @@
             <div class="hero-image">
                 <img id="profile-image" src="./uploads/profile.jpg" alt="Profile picture">
                 <div class="image-border"></div>
-                <p id="profile-image-caption" class="hero-image-caption">Profile photo</p>
             </div>
         </div>
     </section>

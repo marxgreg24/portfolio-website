@@ -61,26 +61,6 @@ function apiUrl(path) {
     return `${baseUrl}${normalizedPath}`;
 }
 
-function updateProfileImageCaption(profileImageUrl) {
-    const caption = document.getElementById('profile-image-caption');
-
-    if (!caption) {
-        return;
-    }
-
-    if (profileImageUrl && /res\.cloudinary\.com/.test(profileImageUrl)) {
-        caption.textContent = 'Live profile photo from Cloudinary';
-        return;
-    }
-
-    if (profileImageUrl) {
-        caption.textContent = 'Live profile photo';
-        return;
-    }
-
-    caption.textContent = 'Profile photo';
-}
-
 // Typewriter animation for the hero title text.
 function typeWriter(element, text, speed = 80) {
     let i = 0;
@@ -203,45 +183,6 @@ function observeDynamicFadeInElements() {
 
     document.querySelectorAll('.fade-in').forEach((el) => {
         fadeInObserver.observe(el);
-    });
-}
-
-// Collapsible navigation for small viewports.
-function setupMobileNav() {
-    const navbar = document.getElementById('navbar');
-    const toggle = navbar?.querySelector('.nav-toggle');
-    const menu = document.getElementById('nav-menu');
-
-    if (!navbar || !toggle || !menu) {
-        return;
-    }
-
-    const setMenuOpen = (isOpen) => {
-        navbar.classList.toggle('nav-open', isOpen);
-        toggle.setAttribute('aria-expanded', String(isOpen));
-        toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
-    };
-
-    toggle.addEventListener('click', () => {
-        setMenuOpen(!navbar.classList.contains('nav-open'));
-    });
-
-    menu.querySelectorAll('a').forEach((link) => {
-        link.addEventListener('click', () => {
-            setMenuOpen(false);
-        });
-    });
-
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            setMenuOpen(false);
-        }
-    });
-
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) {
-            setMenuOpen(false);
-        }
     });
 }
 
@@ -478,8 +419,6 @@ function applyPortfolioData(data) {
         profileImage.alt = profile.fullName;
     }
 
-    updateProfileImageCaption(profile.profileImageUrl);
-
     const emailLink = document.getElementById('contact-email');
     if (emailLink) {
         emailLink.textContent = profile.email;
@@ -513,7 +452,6 @@ function applyPortfolioData(data) {
 async function initializePortfolioPage() {
     setupSmoothScroll();
     setupNavHighlighting();
-    setupMobileNav();
 
     const particles = createParticles();
     setupParticleMouseEffect(particles);
@@ -534,8 +472,6 @@ async function initializePortfolioPage() {
         if (profileImage) {
             profileImage.src = event.newValue;
         }
-
-        updateProfileImageCaption(event.newValue);
     });
 }
 
