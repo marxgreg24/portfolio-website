@@ -33,10 +33,16 @@ const FALLBACK_PORTFOLIO = {
             tech: ['Node.js', 'Express', 'PostgreSQL', 'Supabase', 'JavaScript', 'CSS']
         },
         {
-            title: 'MUST Accommodation Platform',
-            description: 'A full-stack accommodation platform that facilitates bookings and management for students and staff at Mbarara University.',
+            title: 'Campus Nest',
+            description: 'A full-stack accommodation platform that facilitates bookings and management for students at Mbarara University.',
             url: '#',
             tech: ['EJS', 'CSS', 'Node.js', 'JavaScript', 'PostgreSQL']
+        },
+        {
+            title: 'Flood Prediction System',
+            description: 'An AI-driven system for predicting flood risks in real-time, utilizing historical weather data and geographical information.',
+            url: 'https://github.com/TJ-Dave/SmartByte-ML',
+            tech: ['Python', 'Machine Learning', 'HTML, CSS', 'JavaScript']
         }
     ],
     socialLinks: [
