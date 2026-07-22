@@ -46,7 +46,6 @@ const FALLBACK_PORTFOLIO = {
         }
     ],
     socialLinks: [
-        <p class="contact-subtitle fade-in">Click on any icon to connect</p>,
         { platform: 'Email', iconClass: 'fas fa-envelope', url: 'mailto:okirormarkgreg24@gmail.com' },
         { platform: 'LinkedIn', iconClass: 'fab fa-linkedin', url: 'https://www.linkedin.com/in/okiror-mark-gregory-3b45172a1/' },
         { platform: 'GitHub', iconClass: 'fab fa-github', url: 'https://github.com/marxgreg24' }
