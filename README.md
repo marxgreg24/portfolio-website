@@ -129,9 +129,7 @@ All changes appear instantly on the public portfolio!
 ## 📖 Documentation
 
 - **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete setup instructions
-- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Production deployment guide
-- **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - Common tasks
-- **[backend/README.md](./backend/README.md)** - Backend API documentation
+- **(./backend/README.md)** - Backend API documentation
 
 ## 🌐 Deployment
 
