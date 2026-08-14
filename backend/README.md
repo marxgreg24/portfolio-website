@@ -4,13 +4,13 @@ A full-stack portfolio backend built with Node.js, Express, and PostgreSQL (Neon
 
 ## Features
 
-- ✅ RESTful API with Express.js
-- ✅ PostgreSQL database with Neon
-- ✅ Token-based admin authentication
-- ✅ Profile management with Cloudinary image upload
-- ✅ Dynamic skills, projects, and social links management
-- ✅ CORS enabled for frontend communication
-- ✅ Compression and security headers (Helmet)
+- RESTful API with Express.js
+- PostgreSQL database with Neon
+- Token-based admin authentication
+- Profile management with Cloudinary image upload
+- Dynamic skills, projects, and social links management
+- CORS enabled for frontend communication
+- Compression and security headers (Helmet)
 
 ## Prerequisites
 
@@ -201,11 +201,11 @@ If you deploy from the repository root instead of the `frontend` folder, use the
 
 ## Security Considerations
 
-- ⚠️ Change default admin credentials in `.env`
-- ⚠️ Use HTTPS in production
-- ⚠️ Set strong `ADMIN_PASSWORD`
-- ⚠️ Use environment variables for sensitive data
-- ⚠️ Enable CORS only for trusted origins in production
+- Change default admin credentials in `.env`
+- Use HTTPS in production
+- Set strong `ADMIN_PASSWORD`
+- Use environment variables for sensitive data
+- Enable CORS only for trusted origins in production
 
 ## Troubleshooting
 

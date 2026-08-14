@@ -1,6 +1,6 @@
 # Portfolio Backend - Complete Setup Guide
 
-## 🎯 Overview
+## Overview
 
 Your portfolio website is now a full-stack application with:
 - **Frontend**: Dynamic HTML/CSS/JavaScript that fetches data from the backend
@@ -9,7 +9,7 @@ Your portfolio website is now a full-stack application with:
 - **Database**: Neon PostgreSQL for easy cloud deployment
 - **Authentication**: Basic Auth for admin-only operations
 
-## 📋 Project Structure
+## Project Structure
 
 ```
 Porfolio-website/
@@ -41,7 +41,7 @@ Porfolio-website/
 │   └── README.md
 ```
 
-## 🚀 Quick Start (Local Development)
+## Quick Start (Local Development)
 
 ### Step 1: Create Neon Database
 
@@ -93,7 +93,7 @@ npm start
 
 Server runs on: `http://localhost:3000`
 
-## 🔑 Admin Access
+## Admin Access
 
 ### First Time Setup:
 1. Go to http://localhost:3000/admin
@@ -103,15 +103,15 @@ Server runs on: `http://localhost:3000`
    - Password: (whatever you set in `.env`)
 
 ### Admin Features:
-- ✏️ Edit profile information (name, headline, description, etc.)
-- 📸 Upload new profile picture
-- 🏆 Manage skills (add, edit, delete, reorder)
-- 🎯 Manage projects (add, edit, delete, reorder)
-- 🔗 Manage social links (add, edit, delete, reorder)
+- Edit profile information (name, headline, description, etc.)
+- Upload new profile picture
+- Manage skills (add, edit, delete, reorder)
+- Manage projects (add, edit, delete, reorder)
+- Manage social links (add, edit, delete, reorder)
 
 All changes are immediately reflected on the public portfolio page.
 
-## 🌐 Deployment
+## Deployment
 
 ### Option 1: Deploy to Railway + Neon
 
@@ -204,7 +204,7 @@ curl -X PUT http://localhost:5000/api/profile \
   -d '{"fullName":"New Name", "headline":"New Headline"}'
 ```
 
-## 🛡️ Security Best Practices
+## Security Best Practices
 
 ### Before Going to Production:
 
@@ -234,7 +234,7 @@ curl -X PUT http://localhost:5000/api/profile \
    - Consider adding rate limiting to admin endpoints
    - Use `express-rate-limit` package
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Database Connection Failed
 ```
@@ -267,7 +267,7 @@ lsof -ti:3000 | xargs kill -9
 PORT=3000 npm run dev
 ```
 
-## 📝 Frontend Updates
+## Frontend Updates
 
 The frontend is already configured to:
 - Fetch all data from `/api/portfolio`
@@ -276,7 +276,7 @@ The frontend is already configured to:
 
 No changes needed to `index.html`, `script.js`, or `admin.js` - they work out of the box!
 
-## 🔄 Workflow Example
+## Workflow Example
 
 ### Add a New Project:
 
@@ -298,14 +298,14 @@ No changes needed to `index.html`, `script.js`, or `admin.js` - they work out of
 4. Click "Upload"
 5. Image updates on portfolio instantly!
 
-## 📞 Support Tips
+## Support Tips
 
 - Check browser console for errors (F12)
 - Check server logs for backend errors
 - Database errors usually indicate connection issues
 - File upload errors often indicate permissions or file type issues
 
-## 🎓 Next Steps
+## Next Steps
 
 1. **Customize Admin Credentials**: Change default username/password
 2. **Add Email Notifications**: Send email when contact form submitted
@@ -314,7 +314,7 @@ No changes needed to `index.html`, `script.js`, or `admin.js` - they work out of
 5. **Add Analytics**: Track portfolio views
 6. **Add Comments**: Allow comments on projects
 
-## 📚 Resources
+## Resources
 
 - [Express.js Docs](https://expressjs.com/)
 - [PostgreSQL Docs](https://www.postgresql.org/docs/)
@@ -324,6 +324,6 @@ No changes needed to `index.html`, `script.js`, or `admin.js` - they work out of
 
 ---
 
-**Your portfolio backend is ready! 🚀**
+**Your portfolio backend is ready!**
 
 Start the development server and begin managing your portfolio content!

@@ -1,8 +1,8 @@
-# 🎯 Portfolio Website - Full Stack
+# Portfolio Website - Full Stack
 
 A modern, full-stack portfolio website with a CMS admin panel. Built with Node.js, Express, PostgreSQL, and dynamic frontend.
 
-## ✨ Features
+## Features
 
 - **Dynamic Portfolio**: All content managed through admin panel
 - **Secure Admin Panel**: Only you can make changes
@@ -15,7 +15,7 @@ A modern, full-stack portfolio website with a CMS admin panel. Built with Node.j
 - **Image Upload**: Upload profile pictures directly
 - **Easy Deployment**: Deploy to Railway, Render, or your own server
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - HTML5, CSS3, JavaScript
@@ -33,7 +33,7 @@ A modern, full-stack portfolio website with a CMS admin panel. Built with Node.j
 - Automatic backups
 - Easy scaling
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 ├── frontend/                    # Frontend files
@@ -67,7 +67,7 @@ A modern, full-stack portfolio website with a CMS admin panel. Built with Node.j
 └── QUICK_REFERENCE.md          # Common tasks reference
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js (v14+)
@@ -108,7 +108,7 @@ A modern, full-stack portfolio website with a CMS admin panel. Built with Node.j
    - Portfolio: http://localhost:3000
    - Admin Panel: http://localhost:3000/admin
 
-## 🔑 Admin Panel
+## Admin Panel
 
 ### Access
 1. Go to http://localhost:3000/admin
@@ -117,21 +117,20 @@ A modern, full-stack portfolio website with a CMS admin panel. Built with Node.j
    - Username: `admin` (or your custom username)
    - Password: (from .env)
 
-### What You Can Do
-- ✏️ Edit profile information
-- 📸 Upload profile picture
-- 🏆 Manage skills
-- 🎯 Manage projects
-- 🔗 Manage social links
+- Edit profile information
+- Upload profile picture
+- Manage skills
+- Manage projects
+- Manage social links
 
 All changes appear instantly on the public portfolio!
 
-## 📖 Documentation
+## Documentation
 
 - **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete setup instructions
 - **(./backend/README.md)** - Backend API documentation
 
-## 🌐 Deployment
+## Deployment
 
 ### One-Click Deployment (Recommended)
 
@@ -159,15 +158,15 @@ https://your-app.railway.app
 https://your-custom-domain.com (with custom domain)
 ```
 
-## 🔐 Security
+## Security
 
-- ✅ Basic Authentication for admin
-- ✅ SSL/HTTPS in production
-- ✅ Secure password storage
-- ✅ Database security from Neon
-- ⚠️ Change default credentials before deployment
+- Basic Authentication for admin
+- SSL/HTTPS in production
+- Secure password storage
+- Database security from Neon
+- Change default credentials before deployment
 
-## 📝 API Endpoints
+## API Endpoints
 
 ### Public Endpoints
 - `GET /api/portfolio` - Get all portfolio data
@@ -191,7 +190,7 @@ https://your-custom-domain.com (with custom domain)
 
 **[Full API Reference →](./backend/README.md)**
 
-## 🎓 Example Workflow
+## Example Workflow
 
 ### Add a New Project
 
@@ -218,7 +217,7 @@ https://your-custom-domain.com (with custom domain)
    - Scroll to Projects section
    - Your project is there!
 
-## 🛠️ Development
+## Development
 
 ### Run in Development Mode
 ```bash
@@ -238,7 +237,7 @@ npm run build  # (if you add a build step)
 ### Reset Database
 See [QUICK_REFERENCE.md](./QUICK_REFERENCE.md#-database)
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Can't Connect to Database
 - Check DATABASE_URL in .env
@@ -257,7 +256,7 @@ See [QUICK_REFERENCE.md](./QUICK_REFERENCE.md#-database)
 
 **[More Troubleshooting →](./QUICK_REFERENCE.md#-common-issues--fixes)**
 
-## 📞 Support Resources
+## Support Resources
 
 - [Setup Guide](./SETUP_GUIDE.md)
 - [Deployment Guide](./DEPLOYMENT.md)
@@ -267,7 +266,7 @@ See [QUICK_REFERENCE.md](./QUICK_REFERENCE.md#-database)
 - [PostgreSQL Docs](https://www.postgresql.org/docs)
 - [Railway Docs](https://docs.railway.app)
 
-## 🎯 Next Steps
+## Next Steps
 
 1. **Local Setup**: Follow [SETUP_GUIDE.md](./SETUP_GUIDE.md)
 2. **Customize**: Edit profile, add your projects
@@ -275,7 +274,7 @@ See [QUICK_REFERENCE.md](./QUICK_REFERENCE.md#-database)
 4. **Deploy**: Use [DEPLOYMENT.md](./DEPLOYMENT.md) for production
 5. **Connect Domain**: Add custom domain (optional)
 
-## 📝 File Descriptions
+## File Descriptions
 
 | File | Purpose |
 |------|---------|
@@ -287,7 +286,7 @@ See [QUICK_REFERENCE.md](./QUICK_REFERENCE.md#-database)
 | `package.json` | Dependencies and scripts |
 | `migrate.js` | Database initialization script |
 
-## 🚀 Going Live
+## Going Live
 
 ### Before Deployment
 - [ ] Change admin credentials
@@ -307,17 +306,17 @@ See [QUICK_REFERENCE.md](./QUICK_REFERENCE.md#-database)
 - [ ] Monitor for errors
 - [ ] Keep content updated
 
-## 📄 License
+## License
 
 MIT
 
-## 👤 Author
+## Author
 
 Mark Gregory Okiror
 
 ---
 
-## 🎉 You're Ready!
+## You're Ready!
 
 Your full-stack portfolio system is ready to use. Start by reading [SETUP_GUIDE.md](./SETUP_GUIDE.md) and get your portfolio online!
 
