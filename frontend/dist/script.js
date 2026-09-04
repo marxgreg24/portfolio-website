@@ -2,9 +2,9 @@
 const FALLBACK_PORTFOLIO = {
     profile: {
         fullName: 'Mark Gregory Okiror',
-        headline: 'Full Stack, ML, Smart Contracts',
-        heroDescription: 'I craft digital experiences that blend creativity with functionality. From stunning user interfaces to robust backend solutions, I bring ideas to life through code.',
-        aboutSummary: 'I\'m a passionate developer with over 2 years of experience creating innovative digital solutions. My journey spans from crafting pixel-perfect user interfaces to architecting scalable backend systems.',
+        headline: 'Web Dev, ML /AI',
+        heroDescription: 'I craft digital experiences that blend creativity with functionality. From stunning user interfaces and robust backend solutions to building AI models , I bring ideas to life through code.',
+        aboutSummary: 'I\'m a passionate developer with about 3 years of experience creating innovative digital solutions. My journey spans from crafting pixel-perfect user interfaces to creating scalable backend systems as well as creating intelligent AI models.',
         aboutStory: 'I believe in the power of clean code, thoughtful design, and continuous learning. When I\'m not coding, you\'ll find me exploring new technologies or contributing to open-source projects.',
         location: 'Entebbe, Uganda',
         availability: 'Available for new opportunities',
@@ -29,13 +29,13 @@ const FALLBACK_PORTFOLIO = {
         {
             title: 'Portfolio Website',
             description: 'A dynamic, full-stack portfolio website built with Node.js, Express, PostgreSQL, and Supabase. Features a CMS admin panel for managing projects, skills, and profile information with real-time updates.',
-            url: '/',
+            url: 'https://github.com/marxgreg24/portfolio-website',
             tech: ['Node.js', 'Express', 'PostgreSQL', 'Supabase', 'JavaScript', 'CSS']
         },
         {
             title: 'Campus Nest',
             description: 'A full-stack accommodation platform that facilitates bookings and management for students at Mbarara University.',
-            url: '#',
+            url: 'https://github.com/marxgreg24/campus-nest',
             tech: ['EJS', 'CSS', 'Node.js', 'JavaScript', 'PostgreSQL']
         },
         {
